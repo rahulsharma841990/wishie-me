@@ -1,0 +1,17 @@
+/*
+Template Name: WishMe - Admin & Dashboard
+Author: Rahul Sharma
+Version: 2.1.0
+File: App Css
+*/
+
+
+@import "../plugins/bootstrap/functions";
+@import "../plugins/bootstrap/variables";
+@import "variables-dark-material";
+@import "../plugins/bootstrap/bootstrap";
+
+
+// Components
+@import "components/card";
+@import "components/type";
