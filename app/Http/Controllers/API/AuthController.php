@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\SocialLoginRequest;
 use App\Http\Requests\UsernameValidateRequest;
 use App\User;
 use Illuminate\Http\Request;
@@ -14,19 +15,25 @@ use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     public function register(RegisterRequest $request){
-        $imageName = $this->uploadFile($request);
-
         $requestData = $request->except(['password','profile_image']);
         $requestData['password'] = Hash::make($request->password);
-        $requestData['profile_image'] = $imageName;
+        if($request->has('profile_image') && $request->profile_image != null){
+            $imageName = $this->uploadFile($request);
+            $requestData['profile_image'] = $imageName;
+        }
 
         $user = User::create($requestData);
         $accessToken = $user->createToken('authToken')->accessToken;
         return response(['errors'=>null,'message'=>'user created successfully!','user'=>$user,'access_token'=>$accessToken]);
     }
-
-    public function validateUsername(UsernameValidateRequest $request){
-        return response(['errors'=>null,'message'=>'Username available!','username'=>$request->username]);
+    //UsernameValidateRequest
+    public function validateUsername(Request $request){
+        $userModel = User::where(['username'=>$request->username])->first();
+        if($userModel != null){
+            return response(['errors'=>['username'=>['The username has already been taken.']],'message'=>'Username not available!','username'=>$request->username]);
+        }else{
+            return response(['errors'=>null,'message'=>'Username available!','username'=>$request->username]);
+        }
     }
 
     private function uploadFile($request){
@@ -61,5 +68,44 @@ class AuthController extends Controller
             return ['email' => $request->username];
         }
         return ['username' => $request->username];
+    }
+
+    public function socialLogin(Request $request){
+        $rules = [
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'password' => 'required',
+            'gender' => 'required',
+            'username' => 'required|unique:users',
+            'dob' => 'required'
+        ];
+        if($request->has('phone')){
+            $rules['phone'] = 'unique:users';
+        }
+        $this->validate($request,$rules);
+        if($request->has('email') && $request->email != null){
+            $userModel = User::where(['email'=>$request->email])->first();
+            if($userModel != null){
+                $requestData = $request->only(['facebook_id','gmail_id','twitter_id','apple_id']);
+                $userModel->fill($requestData)->save();
+            }
+            if($userModel != null){
+                return response()->json(['errors'=>null,'message'=>'User logged in successfully!',
+                    'user'=>$userModel,'access_token'=>$userModel->createToken('authToken')->accessToken]);
+            }else{
+                $requestData = $request->except(['password','profile_image']);
+                $requestData['password'] = Hash::make($request->password);
+                $user = User::create($requestData);
+                return response()->json(['errors'=>null,'message'=>'user created successfully!',
+                    'user'=>$user,'access_token'=>$user->createToken('authToken')->accessToken]);
+            }
+        }else{
+            $requestData = $request->except(['password','profile_image']);
+            $requestData['password'] = Hash::make($request->password);
+            $user = User::create($requestData);
+            return response()->json(['errors'=>null,'message'=>'user created successfully!',
+                'user'=>$user,'access_token'=>$user->createToken('authToken')->accessToken]);
+        }
+
     }
 }

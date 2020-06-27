@@ -19,8 +19,8 @@ class AlterUsersTable extends Migration
             $table->string('username')->after('last_name');
             $table->date('dob')->nullable()->after('username');
             $table->string('gender')->after('dob');
-            $table->double('phone')->after('password');
-            $table->string('country_code')->after('phone');
+            $table->double('phone')->after('password')->nullable();
+            $table->string('country_code')->after('phone')->nullable();
             $table->text('profile_image')->after('country_code')->nullable();
             $table->text('facebook_id')->after('profile_image')->nullable();
             $table->text('gmail_id')->after('facebook_id')->nullable();
