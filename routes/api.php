@@ -23,7 +23,7 @@ Route::group(['middleware'=>'cors'], function(){
     Route::post('validate/username','API\AuthController@validateUsername');
 
     Route::group(['middleware'=>'auth:api'], function(){
-
+        Route::get('remove/user','API\AuthController@removeUser');
     });
 });
 

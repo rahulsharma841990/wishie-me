@@ -79,7 +79,7 @@ class AuthController extends Controller
             'username' => 'required|unique:users',
             'dob' => 'required'
         ];
-        if($request->has('phone')){
+        if($request->has('phone') && $request->phone != null){
             $rules['phone'] = 'unique:users';
         }
         $this->validate($request,$rules);
@@ -106,6 +106,10 @@ class AuthController extends Controller
             return response()->json(['errors'=>null,'message'=>'user created successfully!',
                 'user'=>$user,'access_token'=>$user->createToken('authToken')->accessToken]);
         }
+    }
 
+    public function removeUser(Request $request){
+        User::find(\Auth::user()->id);
+        return response()->json(['errors'=>null,'message'=>'User removed successfully!']);
     }
 }
