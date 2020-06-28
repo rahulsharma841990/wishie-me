@@ -133,7 +133,7 @@ class AuthController extends Controller
             }else{
                 $userModel->fill($requestData);
                 $userModel->save();
-                return response()->json(['errors'=>null,'message'=>'User login successfully!','user'=>$userModel]);
+                return response()->json(['errors'=>null,'message'=>'User login successfully!','user'=>$userModel,'access_token'=>$userModel->createToken('authToken')->accessToken]);
             }
         }else{
             return response()->json(['errors'=>['email'=>['Email id field is required!']],'message'=>'Email id is missing!']);
