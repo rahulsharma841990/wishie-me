@@ -20,7 +20,8 @@ Route::group(['middleware'=>'cors'], function(){
     Route::post('register','API\AuthController@register');
     Route::post('login','API\AuthController@login');
 
-    Route::post('social/auth','API\AuthController@socialLogin');
+    Route::post('social/auth','API\AuthController@socialRegister');
+    Route::post('social/login','API\AuthController@socialLogin');
 
     Route::post('validate/username','API\AuthController@validateUsername');
 

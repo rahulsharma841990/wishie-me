@@ -70,7 +70,7 @@ class AuthController extends Controller
         return ['username' => $request->username];
     }
 
-    public function socialLogin(Request $request){
+    public function socialRegister(Request $request){
         $rules = [
             'first_name' => 'required',
             'last_name' => 'required',
@@ -118,6 +118,25 @@ class AuthController extends Controller
             return response()->json(['errors'=>null,'message'=>'Users deleted successfully!']);
         }else{
             return response()->json(['errors'=>['token'=>['Unable to verify the token']],'message'=>'Something went wrong!']);
+        }
+    }
+
+    public function socialLogin(Request $request){
+        if($request->has('email')){
+            $userModel = User::where(['email'=>$request->email])->first();
+            $requestData = $request->except(['email']);
+            $requestData = array_filter($requestData, function($item){
+                return $item != null;
+            });
+            if($userModel == null){
+                return response()->json(['errors'=>['email'=>['Use account not found with give details!']],'message'=>'Use account not found with give details!']);
+            }else{
+                $userModel->fill($requestData);
+                $userModel->save();
+                return response()->json(['errors'=>null,'message'=>'User login successfully!','user'=>$userModel]);
+            }
+        }else{
+            return response()->json(['errors'=>['email'=>['Email id field is required!']],'message'=>'Email id is missing!']);
         }
     }
 }
