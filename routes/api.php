@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('remove/users','API\AuthController@removeAllUsers');
+
 Route::group(['middleware'=>'cors'], function(){
     Route::post('register','API\AuthController@register');
     Route::post('login','API\AuthController@login');
