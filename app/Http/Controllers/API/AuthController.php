@@ -74,7 +74,6 @@ class AuthController extends Controller
         $rules = [
             'first_name' => 'required',
             'last_name' => 'required',
-            'password' => 'required',
             'gender' => 'required',
             'username' => 'required|unique:users',
             'dob' => 'required'
