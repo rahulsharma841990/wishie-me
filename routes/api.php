@@ -32,6 +32,13 @@ Route::group(['middleware'=>'cors'], function(){
         Route::post('labels','API\LabelsController@create');
         Route::get('labels','API\LabelsController@getLabels');
         Route::delete('labels/{id}','API\LabelsController@destroy');
+
+        //Birthday
+        Route::post('birthday','API\BirthdayController@create');
     });
+
 });
 
+Route::group(['middleware' => ['web']], function() {
+    Route::get('image/{disk}/{image}',['as'=>'public-image','uses'=>'API\ImageController@image']);
+});
