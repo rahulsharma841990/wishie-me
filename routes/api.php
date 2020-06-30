@@ -27,6 +27,11 @@ Route::group(['middleware'=>'cors'], function(){
 
     Route::group(['middleware'=>'auth:api'], function(){
         Route::get('remove/user','API\AuthController@removeUser');
+
+        //Labels
+        Route::post('labels','API\LabelsController@create');
+        Route::get('labels','API\LabelsController@getLabels');
+        Route::delete('labels/{id}','API\LabelsController@destroy');
     });
 });
 
