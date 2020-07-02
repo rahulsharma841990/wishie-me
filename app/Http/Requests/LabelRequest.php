@@ -24,7 +24,8 @@ class LabelRequest extends FormRequest
     public function rules()
     {
         return [
-            'label_name' => 'required'
+            'label_name' => 'required',
+            'label_color' => 'required'
         ];
     }
 }
