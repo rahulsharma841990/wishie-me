@@ -15,15 +15,17 @@ class LabelsController extends Controller
         if($isLabelExists != null){
             return response()->json(['errors'=>['label'=>['Label '.$request->label_name.' is already exists']],'label'=>$isLabelExists]);
         }
+        $userId = Auth::user()->id;
         $labelModel = new Label;
         $labelModel->fill($request->all());
-        $labelModel->created_by = Auth::user()->id;
+        $labelModel->created_by = $userId;
         $labelModel->save();
-        return response()->json(['errors'=>null,'message'=>'Label created successfully!','label'=>$labelModel]);
+        $labelsModel = Label::whereCreatedBy($userId)->orWhere('created_by',0)->get();
+        return response()->json(['errors'=>null,'message'=>'Label created successfully!','label'=>$labelsModel]);
     }
 
     public function getLabels(){
-        $labelsModel = Label::whereCreatedBy(Auth::user()->id)->get();
+        $labelsModel = Label::whereCreatedBy(Auth::user()->id)->orWhere('created_by',0)->get();
         return response()->json(['errors'=>null,'labels'=>$labelsModel]);
     }
 
@@ -31,7 +33,9 @@ class LabelsController extends Controller
         $labelModel = Label::whereCreatedBy(Auth::user()->id)->find($id);
         if($labelModel != null){
             $labelModel->delete();
+            return response()->json(['errors'=>null,'message'=>'Label deleted successfully!']);
+        }else{
+            return response()->json(['errors'=>'Something went wrong!','message'=>'Unable to delete the label.']);
         }
-        return response()->json(['errors'=>null,'message'=>'Label deleted successfully!']);
     }
 }
