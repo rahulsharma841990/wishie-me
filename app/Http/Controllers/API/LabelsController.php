@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LabelRequest;
 use App\Label;
+use App\LabelMapping;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -51,5 +52,14 @@ class LabelsController extends Controller
         }else{
             return response()->json(['errors'=>['label'=>['Unable to update the label']],'message'=>'Unable to update the label']);
         }
+    }
+
+    public function labelCounts(){
+        $labelModel = LabelMapping::with(['label'])->whereUserId(Auth::user()->id)->get();
+        $labelCountArray = [];
+        foreach($labelModel->groupBy('label_id') as $key => $label){
+            $labelCountArray[$label[0]->label->label_name] = $label->count();
+        }
+        return response()->json(['errors'=>null,'labels'=>$labelCountArray]);
     }
 }
