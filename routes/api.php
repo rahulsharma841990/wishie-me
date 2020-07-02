@@ -36,6 +36,7 @@ Route::group(['middleware'=>'cors'], function(){
 
         //Birthday
         Route::post('birthday','API\BirthdayController@create');
+        Route::get('birthdays','API\BirthdayController@getBirthdays');
     });
 
 });
