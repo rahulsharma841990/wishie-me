@@ -32,6 +32,7 @@ Route::group(['middleware'=>'cors'], function(){
         Route::post('labels','API\LabelsController@create');
         Route::get('labels','API\LabelsController@getLabels');
         Route::delete('labels/{id}','API\LabelsController@destroy');
+        Route::put('labels/{id}','API\LabelsController@update');
 
         //Birthday
         Route::post('birthday','API\BirthdayController@create');

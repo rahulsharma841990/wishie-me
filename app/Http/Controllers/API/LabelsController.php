@@ -38,4 +38,18 @@ class LabelsController extends Controller
             return response()->json(['errors'=>'Something went wrong!','message'=>'Unable to delete the label.']);
         }
     }
+
+    public function update(Request $request, $id){
+        $requestData = array_filter($request->all(), function($item){
+            return $item != null;
+        });
+        $labelModel = Label::whereCreatedBy(Auth::user()->id)->find($id);
+        if($labelModel != null){
+            $labelModel->fill($requestData);
+            $labelModel->save();
+            return response()->json(['errors'=>null,'message'=>'Label updated successfully!','label'=>$labelModel]);
+        }else{
+            return response()->json(['errors'=>['label'=>['Unable to update the label']],'message'=>'Unable to update the label']);
+        }
+    }
 }
