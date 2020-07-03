@@ -40,6 +40,10 @@ class User extends Authenticatable
     ];
 
     public function getProfileImageAttribute($value){
-        return url(route('public-image',['disk'=>'profile_images','image'=>$value]));
+        if($value != null){
+            return url(route('public-image',['disk'=>'profile_images','image'=>$value]));
+        }else{
+            return null;
+        }
     }
 }
