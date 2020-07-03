@@ -90,18 +90,26 @@ class AuthController extends Controller
             }
             if($userModel != null){
                 return response()->json(['errors'=>null,'message'=>'User logged in successfully!',
-                    'user'=>$userModel,'access_token'=>$userModel->createToken('authToken')->accessToken]);
+                    'user'=>$userModel->toArray(),'access_token'=>$userModel->createToken('authToken')->accessToken]);
             }else{
                 $requestData = $request->except(['password','profile_image']);
+                if($request->has('profile_image') && $request->profile_image != null){
+                    $imageName = $this->uploadFile($request);
+                    $requestData['profile_image'] = $imageName;
+                }
                 $requestData['password'] = Hash::make($request->password);
-                $user = User::create($requestData);
+                $user = User::create($requestData)->toArray();
                 return response()->json(['errors'=>null,'message'=>'user created successfully!',
                     'user'=>$user,'access_token'=>$user->createToken('authToken')->accessToken]);
             }
         }else{
             $requestData = $request->except(['password','profile_image']);
+            if($request->has('profile_image') && $request->profile_image != null){
+                $imageName = $this->uploadFile($request);
+                $requestData['profile_image'] = $imageName;
+            }
             $requestData['password'] = Hash::make($request->password);
-            $user = User::create($requestData);
+            $user = User::create($requestData)->toArray();
             return response()->json(['errors'=>null,'message'=>'user created successfully!',
                 'user'=>$user,'access_token'=>$user->createToken('authToken')->accessToken]);
         }
