@@ -5,8 +5,6 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-use App\Http\Requests\SocialLoginRequest;
-use App\Http\Requests\UsernameValidateRequest;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -147,4 +145,5 @@ class AuthController extends Controller
             return response()->json(['errors'=>['email'=>['Email id field is required!']],'message'=>'Email id is missing!']);
         }
     }
+
 }
