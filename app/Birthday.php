@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,5 +18,8 @@ class Birthday extends Model
         return $this->hasManyThrough(Label::class,LabelMapping::class,'birthday_id','id','id','label_id');
     }
 
-
+    public function getBirthdayAttribute($value){
+        $this->birth_date = $value;
+        return Carbon::parse($value)->format('M').' '.Carbon::today()->format('Y');
+    }
 }

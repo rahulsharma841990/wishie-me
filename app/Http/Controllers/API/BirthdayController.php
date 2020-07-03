@@ -9,6 +9,7 @@ use App\LabelMapping;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class BirthdayController extends Controller
@@ -49,7 +50,20 @@ class BirthdayController extends Controller
     }
 
     public function getBirthdays(){
-        $birthdayModel = Birthday::with(['labels'])->get()->toArray();
-        dd($birthdayModel);
+        $birthdays = [];
+        $birthdays['recent'] = Birthday::with(['labels'])
+            ->where(DB::raw('DATE_FORMAT(birthday,\'%m\')'),'>=',DB::raw('DATE_FORMAT((CURDATE() - INTERVAL 1 MONTH),\'%m\')'))
+            ->where(DB::raw('DATE_FORMAT(birthday,\'%m\')'),'<',DB::raw('DATE_FORMAT(CURDATE(),\'%m\')'))
+            ->whereCreatedBy(Auth::user()->id)
+            ->get()->toArray();
+        $birthdays['today'] = Birthday::with(['labels'])
+            ->where(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'),'=',Carbon::today()->format('m-d'))
+            ->whereCreatedBy(Auth::user()->id)
+            ->get()->toArray();
+        $birthdays['upcoming'] = Birthday::with(['labels'])
+            ->where(DB::raw('DATE_FORMAT(birthday,\'%m\')'),'>',Carbon::today()->format('m'))
+            ->whereCreatedBy(Auth::user()->id)
+            ->get()->groupBy('birthday')->toArray();
+        return response()->json(['errors'=>null,'birthdays'=>$birthdays]);
     }
 }
