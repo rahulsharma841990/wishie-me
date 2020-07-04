@@ -24,7 +24,6 @@ class BirthdayRequest extends FormRequest
     public function rules()
     {
         return [
-            'image' => 'required',
             'first_name' => 'required',
             'last_name' => 'required',
             'label' => 'required',

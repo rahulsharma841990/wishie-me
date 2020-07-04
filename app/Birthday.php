@@ -13,7 +13,9 @@ class Birthday extends Model
     protected $appends = ['birth_date','days_left_or_before','turned_age'];
 
     public function getImageAttribute($value){
-        return url(route('public-image',['disk'=>'birthday','image'=>$value]));
+        if($value != null){
+            return url(route('public-image',['disk'=>'birthday','image'=>$value]));
+        }
     }
 
     public function labels(){

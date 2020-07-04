@@ -15,7 +15,7 @@ class CreateBirthdaysTable extends Migration
     {
         Schema::create('birthdays', function (Blueprint $table) {
             $table->id();
-            $table->text('image');
+            $table->text('image')->nullable();
             $table->string('first_name');
             $table->string('last_name');
             $table->text('label');

@@ -17,8 +17,10 @@ class BirthdayController extends Controller
     public function create(BirthdayRequest $request){
         $requestData = $request->except(['image','label','birthday']);
         $birthdayModel = new Birthday;
-        $imageName = $this->uploadFile($request);
-        $requestData['image'] = $imageName;
+        if($request->has('image') && $request->image != null){
+            $imageName = $this->uploadFile($request);
+            $requestData['image'] = $imageName;
+        }
         $requestData['birthday'] = Carbon::parse($request->birthday)->format('Y-m-d');
         $requestData['created_by'] = Auth::user()->id;
         $birthdayModel->fill($requestData);
