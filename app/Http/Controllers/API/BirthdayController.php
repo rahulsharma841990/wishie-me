@@ -58,14 +58,15 @@ class BirthdayController extends Controller
             ->where(DB::raw('DATE_FORMAT(birthday,\'%m\')'),'<',DB::raw('DATE_FORMAT(CURDATE(),\'%m\')'))
             ->whereCreatedBy(Auth::user()->id)
             ->get()->toArray();
-        $birthdays['today'] = Birthday::with(['labels'])
+        $birthdays['upcoming']['Today'] = Birthday::with(['labels'])
             ->where(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'),'=',Carbon::today()->format('m-d'))
             ->whereCreatedBy(Auth::user()->id)
             ->get()->toArray();
-        $birthdays['upcoming'] = Birthday::with(['labels'])
+        $upcoming = Birthday::with(['labels'])
             ->where(DB::raw('DATE_FORMAT(birthday,\'%m\')'),'>',Carbon::today()->format('m'))
             ->whereCreatedBy(Auth::user()->id)
             ->get()->groupBy('birthday')->toArray();
+        $birthdays['upcoming'] = array_merge($birthdays['upcoming'],$upcoming);
         return response()->json(['errors'=>null,'birthdays'=>$birthdays]);
     }
 }
