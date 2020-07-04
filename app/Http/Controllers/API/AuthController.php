@@ -96,9 +96,9 @@ class AuthController extends Controller
                     $requestData['profile_image'] = $imageName;
                 }
                 $requestData['password'] = Hash::make($request->password);
-                $user = User::create($requestData)->toArray();
+                $user = User::create($requestData);
                 return response()->json(['errors'=>null,'message'=>'user created successfully!',
-                    'user'=>$user,'access_token'=>$user->createToken('authToken')->accessToken]);
+                    'user'=>$user->toArray(),'access_token'=>$user->createToken('authToken')->accessToken]);
             }
         }else{
             $requestData = $request->except(['password','profile_image']);
