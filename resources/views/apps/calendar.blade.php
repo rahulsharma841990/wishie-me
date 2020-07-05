@@ -15,7 +15,7 @@
                     <!-- Page-Title -->
                     <div class="row">
                         <div class="col-sm-12">
-                            
+
                              @component('common-components.breadcrumb')
                                  @slot('title') Calendar @endslot
                                  @slot('item1') Metrica @endslot
@@ -25,7 +25,7 @@
                         </div><!--end col-->
                     </div>
                     <!-- end page title end breadcrumb -->
-                    <div class="row">  
+                    <div class="row">
                         <div class="col-lg-4">
                             <div class="card">
                                 <div class="card-body">
@@ -35,52 +35,52 @@
                                         <li class="list-group-item align-items-center d-flex">
                                             <div class="media">
                                                 <img src="{{ URL::asset('assets/images/widgets/project1.jpg') }}" class="mr-3 thumb-sm align-self-center rounded-circle" alt="...">
-                                                <div class="media-body align-self-center"> 
+                                                <div class="media-body align-self-center">
                                                     <h5 class="mt-0 mb-1">Meeting with UI/UX Designers</h5>
-                                                    <p class="text-muted mb-0">Today 07:30 AM</p>                                                                                             
+                                                    <p class="text-muted mb-0">Today 07:30 AM</p>
                                                 </div><!--end media body-->
                                             </div>
                                         </li>
                                         <li class="list-group-item align-items-center ">
                                             <div class="media">
                                                 <img src="{{ URL::asset('assets/images/users/user-5.jpg')}}" class="mr-3 thumb-sm align-self-center rounded-circle" alt="...">
-                                                <div class="media-body align-self-center"> 
+                                                <div class="media-body align-self-center">
                                                     <h5 class="mt-0 mb-1">Lunch with my friend</h5>
-                                                    <p class="text-muted mb-0">Today 12:30 PM</p>                                                                                            
+                                                    <p class="text-muted mb-0">Today 12:30 PM</p>
                                                 </div><!--end media body-->
                                             </div>
                                         </li>
                                         <li class="list-group-item align-items-center">
                                             <div class="media">
                                                 <img src="{{ URL::asset('assets/images/widgets/project3.jpg')}}" class="mr-3 thumb-sm align-self-center rounded-circle" alt="...">
-                                                <div class="media-body align-self-center"> 
+                                                <div class="media-body align-self-center">
                                                     <h5 class="mt-0 mb-1">Call for payment Project ID : #254136</h5>
-                                                    <p class="text-muted mb-0">Tomorrow 10:30 AM</p>                                                                                           
+                                                    <p class="text-muted mb-0">Tomorrow 10:30 AM</p>
                                                 </div><!--end media body-->
                                             </div>
                                         </li>
                                         <li class="list-group-item align-items-center ">
                                             <div class="media">
                                                 <img src="{{ URL::asset('assets/images/users/user-4.jpg')}}" class="mr-3 thumb-sm align-self-center rounded-circle" alt="...">
-                                                <div class="media-body align-self-center"> 
+                                                <div class="media-body align-self-center">
                                                     <h5 class="mt-0 mb-1">Picnic with my Family</h5>
-                                                    <p class="text-muted mb-0">01 June 2019 - 09:30 AM</p>                                                                                           
+                                                    <p class="text-muted mb-0">01 June 2019 - 09:30 AM</p>
                                                 </div><!--end media body-->
                                             </div>
                                         </li>
                                         <li class="list-group-item align-items-center">
                                             <div class="media">
                                                 <img src="{{ URL::asset('assets/images/widgets/project4.jpg')}}" class="mr-3 thumb-sm align-self-center rounded-circle" alt="...">
-                                                <div class="media-body align-self-center"> 
+                                                <div class="media-body align-self-center">
                                                     <h5 class="mt-0 mb-1">Meeting with Developers</h5>
                                                     <p class="text-muted mb-0">04 June 2019 - 07:30 AM</p>
                                                 </div><!--end media body-->
                                             </div>
                                         </li>
-                                    </ul> 
+                                    </ul>
                                 </div><!--end card-body-->
                             </div><!--end card-->
-                        </div><!--end col-->                      
+                        </div><!--end col-->
                         <div class="col-lg-8">
                             <div class="card">
                                 <div class="card-body">
