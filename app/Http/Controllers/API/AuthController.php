@@ -28,7 +28,7 @@ class AuthController extends Controller
     public function validateUsername(Request $request){
         $userModel = User::where(['username'=>$request->username])->first();
         if($userModel != null){
-            return response(['errors'=>['username'=>['The username has already been taken.']],'message'=>'Username not available!','username'=>$request->username]);
+            return response(['errors'=>['username'=>['The username has already been taken.']],'message'=>'Username not available!','username'=>$request->username],422);
         }else{
             return response(['errors'=>null,'message'=>'Username available!','username'=>$request->username]);
         }
@@ -48,12 +48,12 @@ class AuthController extends Controller
         $where = $this->credentials($request);
         $user = User::Where($where)->first();
         if($user == null){
-            return response(['errors'=>['username'=>['Wrong user details!']]]);
+            return response(['errors'=>['username'=>['Wrong user details!']]],422);
         }else{
             if(Hash::check($request->password,$user->password)){
                 return response()->json(['errors'=>null,'message'=>'User logged in successfully!','user'=>$user,'access_token'=>$user->createToken('authToken')->accessToken]);
             }else{
-                return response(['errors'=>['username'=>['Wrong user details!']]]);
+                return response()->json(['errors'=>['username'=>['Wrong user details!']]],422);
             }
         }
     }
@@ -84,9 +84,10 @@ class AuthController extends Controller
             $userModel = User::where(['email'=>$request->email])->first();
             if($userModel != null){
                 $requestData = $request->only(['facebook_id','gmail_id','twitter_id','apple_id']);
+                $requestData = array_filter($requestData, function($item){
+                    return $item != null;
+                });
                 $userModel->fill($requestData)->save();
-            }
-            if($userModel != null){
                 return response()->json(['errors'=>null,'message'=>'User logged in successfully!',
                     'user'=>$userModel->toArray(),'access_token'=>$userModel->createToken('authToken')->accessToken]);
             }else{
@@ -123,7 +124,7 @@ class AuthController extends Controller
             User::where('id','>',1)->delete();
             return response()->json(['errors'=>null,'message'=>'Users deleted successfully!']);
         }else{
-            return response()->json(['errors'=>['token'=>['Unable to verify the token']],'message'=>'Something went wrong!']);
+            return response()->json(['errors'=>['token'=>['Unable to verify the token']],'message'=>'Something went wrong!'],422);
         }
     }
 
@@ -135,14 +136,14 @@ class AuthController extends Controller
                 return $item != null;
             });
             if($userModel == null){
-                return response()->json(['errors'=>['email'=>['Use account not found with give details!']],'message'=>'Use account not found with give details!']);
+                return response()->json(['errors'=>['email'=>['Use account not found with give details!']],'message'=>'Use account not found with give details!'],422);
             }else{
                 $userModel->fill($requestData);
                 $userModel->save();
                 return response()->json(['errors'=>null,'message'=>'User login successfully!','user'=>$userModel,'access_token'=>$userModel->createToken('authToken')->accessToken]);
             }
         }else{
-            return response()->json(['errors'=>['email'=>['Email id field is required!']],'message'=>'Email id is missing!']);
+            return response()->json(['errors'=>['email'=>['Email id field is required!']],'message'=>'Email id is missing!'],422);
         }
     }
 

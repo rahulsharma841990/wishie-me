@@ -14,7 +14,7 @@ class LabelsController extends Controller
     public function create(LabelRequest $request){
         $isLabelExists = Label::whereLabelName($request->label_name)->first();
         if($isLabelExists != null){
-            return response()->json(['errors'=>['label'=>['Label '.$request->label_name.' is already exists']],'label'=>$isLabelExists]);
+            return response()->json(['errors'=>['label'=>['Label '.$request->label_name.' is already exists']],'label'=>$isLabelExists],422);
         }
         $userId = Auth::user()->id;
         $labelModel = new Label;
@@ -36,7 +36,7 @@ class LabelsController extends Controller
             $labelModel->delete();
             return response()->json(['errors'=>null,'message'=>'Label deleted successfully!']);
         }else{
-            return response()->json(['errors'=>'Something went wrong!','message'=>'Unable to delete the label.']);
+            return response()->json(['errors'=>'Something went wrong!','message'=>'Unable to delete the label.'],422);
         }
     }
 
@@ -50,7 +50,7 @@ class LabelsController extends Controller
             $labelModel->save();
             return response()->json(['errors'=>null,'message'=>'Label updated successfully!','label'=>$labelModel]);
         }else{
-            return response()->json(['errors'=>['label'=>['Unable to update the label']],'message'=>'Unable to update the label']);
+            return response()->json(['errors'=>['label'=>['Unable to update the label']],'message'=>'Unable to update the label'],422);
         }
     }
 
