@@ -67,7 +67,7 @@ class BirthdayController extends Controller
             ->get();
 
         $tomorrowBirthdays = $this->getTomorrowBirthdays($birthdayRecords);
-        $birthdays['Tomorrow'] = $tomorrowBirthdays->toArray();
+        $birthdays['Tomorrow'] = $tomorrowBirthdays->values()->toArray();
         $tomorrowIds = $tomorrowBirthdays->groupBy('id')->keys()->toArray();
         $todayIds = collect($birthdays['Today'])->groupby('id')->keys()->toArray();
         $birthdays['This Week'] = $this->getThisWeekBirthdays($birthdayRecords,$tomorrowIds,$todayIds);
