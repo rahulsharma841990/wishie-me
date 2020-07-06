@@ -53,7 +53,7 @@ class BirthdayController extends Controller
     public function getBirthdays(){
         $birthdays = [];
         $birthdays['Recent'] = Birthday::with(['labels'])
-            ->where(DB::raw('DATE_FORMAT(birthday,\'%m\')'),'>=',DB::raw('DATE_FORMAT((CURDATE() - INTERVAL 1 MONTH),\'%m\')'))
+            ->where(DB::raw('DATE_FORMAT(birthday,\'%m\')'),'>=',DB::raw('DATE_FORMAT((CURDATE() - INTERVAL 2 DAY),\'%m\')'))
             ->where(DB::raw('DATE_FORMAT(birthday,\'%m\')'),'<',DB::raw('DATE_FORMAT(CURDATE(),\'%m\')'))
             ->whereCreatedBy(Auth::user()->id)
             ->get()->toArray();
@@ -62,7 +62,6 @@ class BirthdayController extends Controller
             ->whereCreatedBy(Auth::user()->id)
             ->get()->toArray();
         $birthdayRecords = Birthday::with(['labels'])
-            ->where(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'),'>',Carbon::today()->format('m-d'))
             ->whereCreatedBy(Auth::user()->id)
             ->orderBy(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'))
             ->get();
@@ -70,24 +69,25 @@ class BirthdayController extends Controller
         $tomorrowBirthdays = $this->getTomorrowBirthdays($birthdayRecords);
         $birthdays['Tomorrow'] = $tomorrowBirthdays->toArray();
         $tomorrowIds = $tomorrowBirthdays->groupBy('id')->keys()->toArray();
-        $birthdays['This Week'] = $this->getThisWeekBirthdays($birthdayRecords,$tomorrowIds);
+        $todayIds = collect($birthdays['Today'])->groupby('id')->keys()->toArray();
+        $birthdays['This Week'] = $this->getThisWeekBirthdays($birthdayRecords,$tomorrowIds,$todayIds);
         $birthdays['Next Week'] = $this->getNextWeekBirthdays($birthdayRecords);
         $birthdays['Later This Month'] = $this->getLaterThisMonthBirthdays($birthdayRecords);
-        $afterThisMonthBirthdays = $this->getAfterThisMonthBirthdays($birthdayRecords);
-        $birthdays = array_merge($birthdays,$afterThisMonthBirthdays->toArray());
+        $lowYear = $birthdayRecords->filter(function($birthday){
+            return (Carbon::parse($birthday->birthday)->format('Y') == Carbon::today()->format('Y'));
+        });
+        $highYear = $birthdayRecords->filter(function($birthday){
+            return (Carbon::parse($birthday->birthday)->format('Y') > Carbon::today()->format('Y'));
+        });
+        $birthdays = array_merge($birthdays,$lowYear->groupBy('birthday')->toArray());
+        $birthdays = array_merge($birthdays,$highYear->groupBy('birthday')->toArray());
+        $birthdays = collect($birthdays)->filter(function($birthday){
+            return !empty($birthday);
+        });
         return response()->json(['errors'=>null,'birthdays'=>$birthdays]);
     }
 
-    protected function getAfterThisMonthBirthdays($birthdayRecords){
-        $lastDayOfMonth = Carbon::now()->endOfMonth();
-        $birthdayRecords = $birthdayRecords->filter(function($birthday) use ($lastDayOfMonth){
-            $birthday->birthday; // compulsory just for get complete birth date
-            $birthDate = $birthday->birth_date;
-            $birthDate = Carbon::parse($birthDate);
-            return ($birthDate->format('m-d') > $lastDayOfMonth->format('m-d'));
-        });
-        return $birthdayRecords->groupBy('birthday');
-    }
+
 
     protected function getLaterThisMonthBirthdays($birthdayRecords){
         $laterThisMonth = Carbon::parse('next week sunday');
@@ -115,19 +115,20 @@ class BirthdayController extends Controller
         })->values()->toArray();
     }
 
-    protected function getThisWeekBirthdays($birthdayRecords, $tomorrowIds){ //Skip tomorrow ids
+    protected function getThisWeekBirthdays($birthdayRecords, $tomorrowIds, $todayIds){ //Skip tomorrow ids
         $thisWeek = Carbon::parse('this week');
         $thisSunday = Carbon::parse('this sunday');
         if($thisWeek->format('m') < $thisSunday->format('m')){
             $thisWeek = Carbon::now()->firstOfMonth();
         }
-        return $birthdayRecords->filter(function($birthday) use ($thisWeek,$thisSunday,$tomorrowIds){
+        return $birthdayRecords->filter(function($birthday) use ($thisWeek,$thisSunday,$tomorrowIds,$todayIds){
             $birthday->birthday; // compulsory just for get complete birth date
             $birthDate = $birthday->birth_date;
             $birthDate = Carbon::parse($birthDate);
             return ($birthDate->format('m-d') >= $thisWeek->format('m-d') &&
                 $birthDate->format('m-d') <= $thisSunday->format('m-d') &&
-                !in_array($birthday->id,$tomorrowIds)
+                !in_array($birthday->id,$tomorrowIds) &&
+                !in_array($birthday->id,$todayIds)
             );
         })->values()->toArray();
     }

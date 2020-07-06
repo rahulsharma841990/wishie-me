@@ -24,7 +24,12 @@ class Birthday extends Model
 
     public function getBirthdayAttribute($value){
         $this->attributes['birth_date'] = $value;
-        return Carbon::parse($value)->format('M').' '.Carbon::today()->format('Y');
+        $birthdayDate = Carbon::parse($value)->copy()->year(Carbon::now()->year);
+        if($birthdayDate->isPast()){
+            return Carbon::parse($value)->format('F').' '.Carbon::today()->addYear(1)->format('Y');
+        }else{
+            return Carbon::parse($value)->format('F').' '.Carbon::today()->format('Y');
+        }
     }
 
     public function getBirthDateAttribute($value){
