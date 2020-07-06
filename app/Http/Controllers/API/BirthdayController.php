@@ -25,7 +25,7 @@ class BirthdayController extends Controller
         $birthdayModel->fill($requestData);
         $birthdayModel->save();
         $this->saveBirthdayLabels($request,$birthdayModel);
-        $birthdays = Birthday::with(['labels'])->whereCreatedBy(Auth::user()->id)->get()->toArray();
+        $birthdays = $this->getBirthdays();
         return response()->json(['errors'=>null,'message'=>'Birthday created successfully!','birthdays'=>$birthdays]);
     }
 
@@ -66,6 +66,7 @@ class BirthdayController extends Controller
             ->whereCreatedBy(Auth::user()->id)
             ->orderBy(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'))
             ->get();
+
         $tomorrowBirthdays = $this->getTomorrowBirthdays($birthdayRecords);
         $birthdays['Tomorrow'] = $tomorrowBirthdays->toArray();
         $tomorrowIds = $tomorrowBirthdays->groupBy('id')->keys()->toArray();
