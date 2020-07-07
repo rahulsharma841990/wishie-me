@@ -79,15 +79,9 @@ class BirthdayController extends Controller
         $highYear = $birthdayRecords->filter(function($birthday){
             return (Carbon::parse($birthday->birthday)->format('Y') > Carbon::today()->format('Y'));
         });
-        $birthdaysArray = [];
-        foreach($lowYear->groupBy('birthday') as $date => $birthdayList){
-            $birthdaysArray[][$date] = $birthdayList->toArray();
-        }
-        foreach($highYear->groupBy('birthday') as $date => $birthdayList){
-            $birthdaysArray[][$date] = $birthdayList->toArray();
-        }
 
-        $birthdays = array_merge($birthdays,$birthdaysArray);
+        $birthdays = array_merge($birthdays,$lowYear->groupBy('birthday')->toArray());
+        $birthdays = array_merge($birthdays,$highYear->groupBy('birthday')->toArray());
         $birthdays = collect($birthdays)->filter(function($birthday){
             return !empty($birthday);
         });
