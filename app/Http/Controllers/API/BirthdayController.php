@@ -97,7 +97,7 @@ class BirthdayController extends Controller
         $birthdays = collect($birthdays)->filter(function($birthday){
             return !empty($birthday);
         });
-        return response()->json(['errors'=>null,'birthdays'=>$birthdays]);
+        return response()->json($birthdays);
     }
 
     protected function getUpcomingBirthdays($birthdayRecords,$tomorrowIds,$todayIds,$recentIds){
