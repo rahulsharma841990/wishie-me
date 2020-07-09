@@ -147,7 +147,7 @@ class BirthdayController extends Controller
             $birthday->birthday; // compulsory just for get complete birth date
             $birthDate = $birthday->birth_date;
             $birthDate = Carbon::parse($birthDate);
-            return ($birthDate->format('m-d') >= $thisWeek->format('m-d') &&
+            return ($birthDate->format('m-d') > Carbon::today()->format('m-d') &&
                 $birthDate->format('m-d') <= $thisSunday->format('m-d') &&
                 !in_array($birthday->id,$tomorrowIds) &&
                 !in_array($birthday->id,$todayIds) &&
