@@ -159,11 +159,12 @@ class BirthdayController extends Controller
     protected function getTomorrowBirthdays($birthdayRecords,$todayIds){
         return $birthdayRecords->filter(function($birthday) use ($todayIds){
             $birthday->birthday; // compulsory just for get complete birth date
+            $birthdayObject = $birthday;
             $birthDate = $birthday->birth_date;
             $birthday = Carbon::parse($birthDate);
             return (
                 $birthday->format('m-d') == Carbon::tomorrow()->format('m-d') &&
-                !in_array($birthday->id,$todayIds)
+                !in_array($birthdayObject->id,$todayIds)
             );
         });
     }
