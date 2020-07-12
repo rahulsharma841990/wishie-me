@@ -19,7 +19,7 @@ class CreateBirthdaysTable extends Migration
             $table->string('first_name');
             $table->string('last_name')->nullable();
             $table->text('label');
-            $table->date('birthday');
+            $table->string('birthday');
             $table->string('email')->nullable();
             $table->double('mobile')->nullable();
             $table->longText('note')->nullable();
