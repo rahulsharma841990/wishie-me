@@ -25,7 +25,7 @@ class BirthdayRequest extends FormRequest
     {
         return [
             'first_name' => 'required',
-            'last_name' => 'required',
+//            'last_name' => 'required',
             'label' => 'required',
             'birthday' => 'required',
         ];

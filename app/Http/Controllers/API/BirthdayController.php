@@ -20,7 +20,12 @@ class BirthdayController extends Controller
             $imageName = $this->uploadFile($request);
             $requestData['image'] = $imageName;
         }
-        $requestData['birthday'] = Carbon::parse($request->birthday)->format('Y-m-d');
+        $explodedDate = explode('-',$request->birthday);
+        if(isset($explodedDate[2])){
+            $requestData['birthday'] = Carbon::parse($request->birthday)->format('Y-m-d');
+        }else{
+            $requestData['birthday'] = Carbon::createFromFormat('d-m',$request->birthday)->format('m-d');
+        }
         $requestData['created_by'] = Auth::user()->id;
         $birthdayModel->fill($requestData);
         $birthdayModel->save();
@@ -80,8 +85,6 @@ class BirthdayController extends Controller
             return (Carbon::parse($birthday->birthday)->format('Y') > Carbon::today()->format('Y'));
         });
 
-//        $birthdays = array_merge($birthdays,$lowYear->groupBy('birthday')->toArray());
-//        $birthdays = array_merge($birthdays,$highYear->groupBy('birthday')->toArray());
         $birthdaysArray = [];
         $index = 0;
         foreach($lowYear->groupBy('birthday') as $date => $birthdayList){
@@ -93,7 +96,6 @@ class BirthdayController extends Controller
             $index++;
         }
         $birthdays['upcomming'] = array_values($birthdaysArray);
-//        $birthdays = array_merge($birthdays,array_values($birthdaysArray));
         $birthdays = collect($birthdays)->filter(function($birthday){
             return !empty($birthday);
         });
@@ -117,7 +119,12 @@ class BirthdayController extends Controller
         return $birthdayRecords->filter(function($birthday) use ($laterThisMonth,$lastDayOfMonth){
             $birthday->birthday; // compulsory just for get complete birth date
             $birthDate = $birthday->birth_date;
-            $birthDate = Carbon::parse($birthDate);
+            $explodedDate = explode('-',$birthDate);
+            if(isset($explodedDate[2])){
+                $birthDate = Carbon::parse($birthDate);
+            }else{
+                $birthDate = Carbon::createFromFormat('m-d',$birthDate);
+            }
             return ($birthDate->format('m-d') > $laterThisMonth->format('m-d') &&
                 $birthDate->format('m-d') <= $lastDayOfMonth->format('m-d')
             );
@@ -130,7 +137,12 @@ class BirthdayController extends Controller
         return $birthdayRecords->filter(function($birthday) use ($nextWeek, $nextWeekSunday){
             $birthday->birthday; // compulsory just for get complete birth date
             $birthDate = $birthday->birth_date;
-            $birthDate = Carbon::parse($birthDate);
+            $explodedDate = explode('-',$birthDate);
+            if(isset($explodedDate[2])){
+                $birthDate = Carbon::parse($birthDate);
+            }else{
+                $birthDate = Carbon::createFromFormat('m-d',$birthDate);
+            }
             return ($birthDate->format('m-d') >= $nextWeek->format('m-d') &&
                 $birthDate->format('m-d') <= $nextWeekSunday->format('m-d')
             );
@@ -146,7 +158,12 @@ class BirthdayController extends Controller
         return $birthdayRecords->filter(function($birthday) use ($thisWeek,$thisSunday,$tomorrowIds,$todayIds, $recentIds){
             $birthday->birthday; // compulsory just for get complete birth date
             $birthDate = $birthday->birth_date;
-            $birthDate = Carbon::parse($birthDate);
+            $explodedDate = explode('-',$birthDate);
+            if(isset($explodedDate[2])){
+                $birthDate = Carbon::parse($birthDate);
+            }else{
+                $birthDate = Carbon::createFromFormat('m-d',$birthDate);
+            }
             return ($birthDate->format('m-d') > Carbon::today()->format('m-d') &&
                 $birthDate->format('m-d') <= $thisSunday->format('m-d') &&
                 !in_array($birthday->id,$tomorrowIds) &&
@@ -161,10 +178,14 @@ class BirthdayController extends Controller
             $birthday->birthday; // compulsory just for get complete birth date
             $birthdayObject = $birthday;
             $birthDate = $birthday->birth_date;
-            $birthday = Carbon::parse($birthDate);
+            $explodedDate = explode('-',$birthDate);
+            if(isset($explodedDate[2])){
+                $birthday = Carbon::parse($birthDate);
+            }else{
+                $birthday = Carbon::createFromFormat('m-d',$birthDate);
+            }
             return (
-                $birthday->format('m-d') == Carbon::tomorrow()->format('m-d') &&
-                !in_array($birthdayObject->id,$todayIds)
+                $birthday->format('m-d') == Carbon::tomorrow()->format('m-d')
             );
         });
     }

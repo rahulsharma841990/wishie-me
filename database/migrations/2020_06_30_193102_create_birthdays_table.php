@@ -17,7 +17,7 @@ class CreateBirthdaysTable extends Migration
             $table->id();
             $table->text('image')->nullable();
             $table->string('first_name');
-            $table->string('last_name');
+            $table->string('last_name')->nullable();
             $table->text('label');
             $table->date('birthday');
             $table->string('email')->nullable();

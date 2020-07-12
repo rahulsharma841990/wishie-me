@@ -24,11 +24,19 @@ class Birthday extends Model
 
     public function getBirthdayAttribute($value){
         $this->attributes['birth_date'] = $value;
-        $birthdayDate = Carbon::parse($value)->copy()->year(Carbon::now()->year);
-        if($birthdayDate->isPast()){
-            return Carbon::parse($value)->format('F').' '.Carbon::today()->addYear(1)->format('Y');
+        $explodedDate = explode('-',$value);
+        $parsedValue = '';
+        if(isset($explodedDate[2])){
+            $parsedValue = Carbon::parse($value);
+            $birthdayDate = Carbon::parse($value)->copy()->year(Carbon::now()->year);
         }else{
-            return Carbon::parse($value)->format('F').' '.Carbon::today()->format('Y');
+            $parsedValue = Carbon::createFromFormat('m-d',$value);
+            $birthdayDate = Carbon::createFromFormat('m-d',$value)->copy()->year(Carbon::now()->year);
+        }
+        if($birthdayDate->isPast()){
+            return $parsedValue->format('F').' '.Carbon::today()->addYear(1)->format('Y');
+        }else{
+            return $parsedValue->format('F').' '.Carbon::today()->format('Y');
         }
     }
 
@@ -37,13 +45,24 @@ class Birthday extends Model
     }
 
     public function getDaysLeftOrBeforeAttribute($value){
-        $dob = Carbon::createFromFormat('Y-m-d',$this->attributes['birth_date'])->format('m-d');
+        $explodedDate = explode('-',$this->attributes['birth_date']);
+        if(isset($explodedDate[2])){
+            $dob = Carbon::createFromFormat('Y-m-d',$this->attributes['birth_date'])->format('m-d');
+        }else{
+            $dob = Carbon::createFromFormat('m-d',$this->attributes['birth_date'])->format('m-d');
+        }
+
         $dob = Carbon::createFromFormat('m-d',$dob)->format('Y-m-d');
         return Carbon::parse($dob)->diff(Carbon::today())->days;
     }
 
     public function getTurnedAgeAttribute(){
-        return Carbon::today()->diff(Carbon::parse($this->attributes['birth_date']))->y;
+        $explodedDate = explode('-',$this->attributes['birth_date']);
+        if(isset($explodedDate[2])){
+            return Carbon::today()->diff(Carbon::parse($this->attributes['birth_date']))->y;
+        }else{
+            return null;
+        }
     }
 
 }
