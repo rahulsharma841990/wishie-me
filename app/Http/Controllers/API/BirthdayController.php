@@ -56,26 +56,23 @@ class BirthdayController extends Controller
 
     public function getBirthdays(){
         $birthdays = [];
-        $birthdays['Recent'] = Birthday::with(['labels'])
-            ->where(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'),'>=',Carbon::now()->subDay(2)->format('m-d'))
-            ->where(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'),'<',Carbon::today()->format('m-d'))
-            ->whereCreatedBy(Auth::user()->id)
-            ->get()->toArray();
-        $birthdays['Today'] = Birthday::with(['labels'])
-            ->where(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'),'=',Carbon::today()->format('m-d'))
-            ->whereCreatedBy(Auth::user()->id)
-            ->get()->toArray();
         $birthdayRecords = Birthday::with(['labels'])
             ->whereCreatedBy(Auth::user()->id)
             ->orderBy(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'))
             ->get();
+        $birthdays['Recent'] = $this->getRecentBirthdays($birthdayRecords);
+        $birthdays['Today'] = Birthday::with(['labels'])
+            ->where(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'),'=',Carbon::today()->format('m-d'))
+            ->whereCreatedBy(Auth::user()->id)
+            ->get()->toArray();
+
         $recentIds = collect($birthdays['Recent'])->groupBy('id')->keys()->toArray();
         $todayIds = collect($birthdays['Today'])->groupby('id')->keys()->toArray();
         $tomorrowBirthdays = $this->getTomorrowBirthdays($birthdayRecords,$todayIds);
         $birthdays['Tomorrow'] = $tomorrowBirthdays->values()->toArray();
         $tomorrowIds = $tomorrowBirthdays->groupBy('id')->keys()->toArray();
         $birthdays['This Week'] = $this->getThisWeekBirthdays($birthdayRecords,$tomorrowIds,$todayIds,$recentIds);
-        $birthdays['Next Week'] = $this->getNextWeekBirthdays($birthdayRecords);
+        $birthdays['Next Week'] = $this->getNextWeekBirthdays($birthdayRecords,$tomorrowIds);
         $birthdays['Later This Month'] = $this->getLaterThisMonthBirthdays($birthdayRecords);
         $birthdayRecords = $this->getUpcomingBirthdays($birthdayRecords,$tomorrowIds,$todayIds,$recentIds);
         $lowYear = $birthdayRecords->filter(function($birthday){
@@ -84,7 +81,8 @@ class BirthdayController extends Controller
         $highYear = $birthdayRecords->filter(function($birthday){
             return (Carbon::parse($birthday->birthday)->format('Y') > Carbon::today()->format('Y'));
         });
-
+        $highYear = $this->sortBirthdays($highYear->toArray());
+        $lowYear = $this->sortBirthdays($lowYear->toArray());
         $birthdaysArray = [];
         $index = 0;
         foreach($lowYear->groupBy('birthday') as $date => $birthdayList){
@@ -102,6 +100,27 @@ class BirthdayController extends Controller
         return response()->json($birthdays);
     }
 
+    protected function sortBirthdays($toSort){
+        usort($toSort,function($a,$b){
+            $date1 = explode('-',$a['birth_date']);
+            $date2 = explode('-',$b['birth_date']);
+            if(isset($date1[2]) && isset($date2[2])){
+                if(Carbon::parse($a['birth_date'])->format('m-d') == Carbon::parse($b['birth_date'])->format('m-d')){return 0;}
+                return (Carbon::parse($a['birth_date'])->format('m-d') < Carbon::parse($b['birth_date'])->format('m-d'))? -1:1;
+            }elseif(isset($date1[2]) && !isset($date2[2])){
+                if(Carbon::parse($a['birth_date'])->format('m-d') == Carbon::createFromFormat('m-d',$b['birth_date'])->format('m-d')){return 0;}
+                return (Carbon::parse($a['birth_date'])->format('m-d') < Carbon::createFromFormat('m-d',$b['birth_date'])->format('m-d'))? -1:1;
+            }elseif(!isset($date1[2]) && isset($date2[2])){
+                if(Carbon::createFromFormat('m-d',$a['birth_date'])->format('m-d') == Carbon::parse($b['birth_date'])->format('m-d')){return 0;}
+                return (Carbon::createFromFormat('m-d',$a['birth_date'])->format('m-d') < Carbon::parse($b['birth_date'])->format('m-d'))? -1:1;
+            }elseif(!isset($date1[2]) && !isset($date2[2])){
+                if(Carbon::createFromFormat('m-d',$a['birth_date'])->format('m-d') == Carbon::createFromFormat('m-d',$b['birth_date'])->format('m-d')){return 0;}
+                return (Carbon::createFromFormat('m-d',$a['birth_date'])->format('m-d') < Carbon::createFromFormat('m-d',$b['birth_date'])->format('m-d'))? -1:1;
+            }
+        });
+        return collect($toSort);
+    }
+
     protected function getUpcomingBirthdays($birthdayRecords,$tomorrowIds,$todayIds,$recentIds){
         $lastDayOfMonth = Carbon::parse('last day of this month');
         return $birthdayRecords->filter(function($birthday) use ($tomorrowIds,$todayIds,$recentIds, $lastDayOfMonth){
@@ -111,6 +130,22 @@ class BirthdayController extends Controller
                 Carbon::parse($birthday->birthday) > $lastDayOfMonth
             );
         });
+    }
+
+    protected function getRecentBirthdays($birthdayRecords){
+        return $birthdayRecords->filter(function($birthday){
+            $birthday->birthday; // compulsory just for get complete birth date
+            $birthDate = $birthday->birth_date;
+            $explodedDate = explode('-',$birthDate);
+            if(isset($explodedDate[2])){
+                $birthDate = Carbon::parse($birthDate);
+            }else{
+                $birthDate = Carbon::createFromFormat('m-d',$birthDate);
+            }
+            return ($birthDate->format('m-d') >= Carbon::now()->subDay(2)->format('m-d') &&
+                $birthDate->format('m-d') < Carbon::today()->format('m-d')
+            );
+        })->values()->toArray();
     }
 
     protected function getLaterThisMonthBirthdays($birthdayRecords){
@@ -131,10 +166,10 @@ class BirthdayController extends Controller
         })->values()->toArray();
     }
 
-    protected function getNextWeekBirthdays($birthdayRecords){
+    protected function getNextWeekBirthdays($birthdayRecords,$tomorrowIds){
         $nextWeek = Carbon::parse('next week');
         $nextWeekSunday = Carbon::parse('next week sunday');
-        return $birthdayRecords->filter(function($birthday) use ($nextWeek, $nextWeekSunday){
+        return $birthdayRecords->filter(function($birthday) use ($nextWeek, $nextWeekSunday,$tomorrowIds){
             $birthday->birthday; // compulsory just for get complete birth date
             $birthDate = $birthday->birth_date;
             $explodedDate = explode('-',$birthDate);
@@ -144,7 +179,8 @@ class BirthdayController extends Controller
                 $birthDate = Carbon::createFromFormat('m-d',$birthDate);
             }
             return ($birthDate->format('m-d') >= $nextWeek->format('m-d') &&
-                $birthDate->format('m-d') <= $nextWeekSunday->format('m-d')
+                $birthDate->format('m-d') <= $nextWeekSunday->format('m-d') &&
+                !in_array($birthday->id,$tomorrowIds)
             );
         })->values()->toArray();
     }
