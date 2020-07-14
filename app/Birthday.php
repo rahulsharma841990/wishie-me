@@ -51,9 +51,12 @@ class Birthday extends Model
         }else{
             $dob = Carbon::createFromFormat('m-d',$this->attributes['birth_date'])->format('m-d');
         }
-
-        $dob = Carbon::createFromFormat('m-d',$dob)->format('Y-m-d');
-        return Carbon::parse($dob)->diff(Carbon::today())->days;
+        if(Carbon::createFromFormat('m-d',$dob)->isPast()){
+           return Carbon::createFromFormat('m-d',$dob)->addYear(1)->diff(Carbon::today())->days;
+        }else{
+            $dob = Carbon::createFromFormat('m-d',$dob)->format('Y-m-d');
+            return Carbon::parse($dob)->diff(Carbon::today())->days;
+        }
     }
 
     public function getTurnedAgeAttribute(){
