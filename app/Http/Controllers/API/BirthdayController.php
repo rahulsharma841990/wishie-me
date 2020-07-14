@@ -7,6 +7,7 @@ use App\Http\Requests\BirthdayRequest;
 use App\Http\Controllers\Controller;
 use App\LabelMapping;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -224,5 +225,43 @@ class BirthdayController extends Controller
                 $birthday->format('m-d') == Carbon::tomorrow()->format('m-d')
             );
         });
+    }
+
+    public function edit(Request $request, $id){
+        $requestData = $request->except(['image','label','birthday']);
+        $birthdayModel = Birthday::where(['created_by'=>Auth::user()->id])->find($id);
+        if($birthdayModel == null){
+            return response()->json(['errors'=>['birthday'=>['Birthday not found with give details']],'message'=>'Birthday not found!'],422);
+        }
+        if($request->hasFile('image')){
+            $imageName = $this->uploadFile($request);
+            $requestData['image'] = $imageName;
+        }
+        if($request->has('birthday')){
+            $explodedDate = explode('-',$request->birthday);
+            if(isset($explodedDate[2])){
+                $requestData['birthday'] = Carbon::parse($request->birthday)->format('Y-m-d');
+            }else{
+                $requestData['birthday'] = Carbon::createFromFormat('d-m',$request->birthday)->format('m-d');
+            }
+        }
+        $birthdayModel->fill($requestData);
+        $birthdayModel->save();
+        if($request->has('label')){
+            $this->handleBirthdayLabels($request,$id,$birthdayModel);
+        }
+        return response()->json(['errors'=>null,'message'=>'Birthday updated successfully!']);
+
+    }
+
+    protected function handleBirthdayLabels($request,$id,$birthday){
+        LabelMapping::where(['birthday_id'=>$id])->delete();
+        $this->saveBirthdayLabels($request,$birthday);
+    }
+
+    public function delete($id){
+        Birthday::where(['created_by'=>Auth::user()->id,'id'=>$id])->delete();
+        LabelMapping::where(['user_id'=>Auth::user()->id,'birthday_id'=>$id])->delete();
+        return response()->json(['errors'=>null,'message'=>'Birthday deleted successfully!']);
     }
 }

@@ -38,6 +38,8 @@ Route::group(['middleware'=>'cors'], function(){
         //Birthday
         Route::post('birthday','API\BirthdayController@create');
         Route::get('dashboard','API\BirthdayController@getBirthdays');
+        Route::put('birthday/update/{id}','API\BirthdayController@edit');
+        Route::delete('birthday/delete/{id}','API\BirthdayController@delete');
     });
 
 });
