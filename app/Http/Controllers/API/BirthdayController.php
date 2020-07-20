@@ -62,6 +62,9 @@ class BirthdayController extends Controller
             ->orderBy(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'))
             ->get();
         $birthdays['Recent'] = $this->getRecentBirthdays($birthdayRecords);
+        $birthdays['birthdays'] = $birthdayRecords->toArray();
+        return response()->json($birthdays);
+
         $birthdays['Today'] = Birthday::with(['labels'])
             ->where(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'),'=',Carbon::today()->format('m-d'))
             ->whereCreatedBy(Auth::user()->id)
