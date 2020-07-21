@@ -33,7 +33,8 @@ class Birthday extends Model
             $parsedValue = Carbon::createFromFormat('m-d',$value);
             $birthdayDate = Carbon::createFromFormat('m-d',$value)->copy()->year(Carbon::now()->year);
         }
-        if($birthdayDate->isPast()){
+
+        if($birthdayDate->isPast() && !$birthdayDate->isToday()){
             return $parsedValue->format('F').' '.Carbon::today()->addYear(1)->format('Y');
         }else{
             return $parsedValue->format('F').' '.Carbon::today()->format('Y');

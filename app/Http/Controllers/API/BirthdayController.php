@@ -55,6 +55,7 @@ class BirthdayController extends Controller
         return $imageName;
     }
 
+    /** @noinspection PhpUnreachableStatementInspection */
     public function getBirthdays(){
         $birthdays = [];
         $birthdayRecords = Birthday::with(['labels'])

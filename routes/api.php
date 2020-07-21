@@ -41,7 +41,6 @@ Route::group(['middleware'=>'cors'], function(){
         Route::put('birthday/update/{id}','API\BirthdayController@edit');
         Route::delete('birthday/delete/{id}','API\BirthdayController@delete');
     });
-
 });
 Route::group(['middleware' => ['web']], function() {
     Route::get('image/{disk}/{image}',['as'=>'public-image','uses'=>'API\ImageController@image']);
