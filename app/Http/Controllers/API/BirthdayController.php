@@ -59,7 +59,7 @@ class BirthdayController extends Controller
     public function getBirthdays(){
         $birthdays = [];
         $birthdayRecords = Birthday::with(['labels'])
-            ->whereCreatedBy(84)
+            ->whereCreatedBy(Auth::user()->id)
             ->orderBy(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'))
             ->get();
         $birthdays['Recent'] = $this->getRecentBirthdays($birthdayRecords);
