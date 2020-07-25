@@ -16,6 +16,6 @@ class Label extends Model
     }
 
     public function getTotalCountsAttribute(){
-        return $this->hasMany(LabelMapping::class)->whereUserId(84)->count();
+        return $this->hasMany(LabelMapping::class)->whereUserId(Auth::user()->id)->count();
     }
 }
