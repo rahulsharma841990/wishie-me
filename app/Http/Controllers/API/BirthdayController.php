@@ -241,7 +241,7 @@ class BirthdayController extends Controller
         if($birthdayModel == null){
             return response()->json(['errors'=>['birthday'=>['Birthday not found with give details']],'message'=>'Birthday not found!'],422);
         }
-        if($request->hasFile('image')){
+        if($request->has('image')){
             $imageName = $this->uploadFile($request);
             $requestData['image'] = $imageName;
         }
