@@ -63,10 +63,10 @@ class BirthdayController extends Controller
             ->orderBy(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'))
             ->get();
         $birthdays['Recent'] = $this->getRecentBirthdays($birthdayRecords);
-        $birthdayRecords = $birthdayRecords->filter(function($birthday) use ($birthdays){
-            $recentIds = collect($birthdays['Recent'])->groupBy('id')->keys()->toArray();
-            return !in_array($birthday->id,$recentIds);
-        });
+//        $birthdayRecords = $birthdayRecords->filter(function($birthday) use ($birthdays){
+//            $recentIds = collect($birthdays['Recent'])->groupBy('id')->keys()->toArray();
+//            return !in_array($birthday->id,$recentIds);
+//        });
         $birthdays['birthdays'] = $birthdayRecords->values()->toArray();
         return response()->json($birthdays);
 
