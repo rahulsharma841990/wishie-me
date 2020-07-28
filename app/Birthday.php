@@ -42,6 +42,59 @@ class Birthday extends Model
     }
 
     public function getBirthDateAttribute($value){
+        if($value != null){
+            $explodedDate = explode('-',$value);
+            if(isset($explodedDate[2])){
+                $birthday = Carbon::parse($value);
+            }else{
+                $birthday = Carbon::createFromFormat('m-d',$value);
+            }
+            //For Tomorrow
+            if($birthday->format('m-d') == Carbon::tomorrow()->format('m-d')){
+                if(!isset($this->attributes['type'])){
+                    $this->attributes['type'] = 'tomorrow';
+                }
+            }
+
+            //This week
+            $thisWeek = Carbon::parse('this week');
+            $thisSunday = Carbon::parse('this sunday');
+            if($birthday->format('m-d') > Carbon::today()->format('m-d') &&
+                $birthday->format('m-d') <= $thisSunday->format('m-d')){
+                if(!isset($this->attributes['type'])) {
+                    $this->attributes['type'] = 'this_week';
+                }
+            }
+
+            //Next Week
+            $nextWeek = Carbon::parse('next week');
+            $nextWeekSunday = Carbon::parse('next week sunday');
+            if($birthday->format('m-d') >= $nextWeek->format('m-d') &&
+                $birthday->format('m-d') <= $nextWeekSunday->format('m-d')){
+                if(!isset($this->attributes['type'])) {
+                    $this->attributes['type'] = 'next_week';
+                }
+            }
+
+            //Later this Month
+            $laterThisMonth = Carbon::parse('next week sunday');
+            $lastDayOfMonth = Carbon::now()->endOfMonth();
+            if($birthday->format('m-d') > $laterThisMonth->format('m-d') &&
+                $birthday->format('m-d') <= $lastDayOfMonth->format('m-d')){
+                if(!isset($this->attributes['type'])) {
+                    $this->attributes['type'] = 'later_this_month';
+                }
+            }
+
+            //Upcoming Birthdays
+            $lastDayOfMonth = Carbon::parse('last day of this month');
+            if(Carbon::parse($birthday) > $lastDayOfMonth->format('m-d')){
+                if(!isset($this->attributes['type'])) {
+                    $this->attributes['type'] = 'upcoming';
+                }
+            }
+
+        }
         return $this->attributes['birth_date'];
     }
 
