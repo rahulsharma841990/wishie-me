@@ -151,7 +151,7 @@ class BirthdayController extends Controller
             }else{
                 $birthDate = Carbon::createFromFormat('m-d',$birthDate);
             }
-            return ($birthDate->format('m-d') >= Carbon::now()->subDay(2)->format('m-d') &&
+            return ($birthDate->format('m-d') >= Carbon::now()->subDay(3)->format('m-d') &&
                 $birthDate->format('m-d') < Carbon::today()->format('m-d')
             );
         })->values()->toArray();
@@ -241,7 +241,7 @@ class BirthdayController extends Controller
         if($birthdayModel == null){
             return response()->json(['errors'=>['birthday'=>['Birthday not found with give details']],'message'=>'Birthday not found!'],422);
         }
-        if($request->has('image')){
+        if($request->has('image') && $request->image != '' && $request->image != null){
             $imageName = $this->uploadFile($request);
             $requestData['image'] = $imageName;
         }
