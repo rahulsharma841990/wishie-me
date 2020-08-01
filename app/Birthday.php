@@ -49,6 +49,14 @@ class Birthday extends Model
             }else{
                 $birthday = Carbon::createFromFormat('m-d',$value);
             }
+
+            //For Today
+            if($birthday->format('m-d') == Carbon::today()->format('m-d')){
+                if(!isset($this->attributes['type'])){
+                    $this->attributes['type'] = 'today';
+                }
+            }
+
             //For Tomorrow
             if($birthday->format('m-d') == Carbon::tomorrow()->format('m-d')){
                 if(!isset($this->attributes['type'])){
