@@ -67,7 +67,7 @@ class BirthdayController extends Controller
 //            $recentIds = collect($birthdays['Recent'])->groupBy('id')->keys()->toArray();
 //            return !in_array($birthday->id,$recentIds);
 //        });
-        $birthdays['birthdays'] = $birthdayRecords->values()->toArray();
+        $birthdays['birthdays'] = $this->sortBirthdays($birthdayRecords->values()->toArray());
         return response()->json($birthdays);
 
         $birthdays['Today'] = Birthday::with(['labels'])
