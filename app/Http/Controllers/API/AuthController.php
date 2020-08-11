@@ -4,9 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\RegisterRequest;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 
@@ -80,6 +82,12 @@ class AuthController extends Controller
             $rules['phone'] = 'unique:users';
         }
         $this->validate($request,$rules);
+        $socialRequest = $request->only(['facebook_id','gmail_id','twitter_id','apple_id']);
+        $isSocialDetailsExistUserModel = User::where(collect($socialRequest)->filter()->toArray())->first();
+        if($isSocialDetailsExistUserModel != null){
+            return response()->json(['errors'=>null,'message'=>'User logged in successfully!',
+                'access_token'=>$isSocialDetailsExistUserModel->createToken('authToken')->accessToken,'user'=>$isSocialDetailsExistUserModel]);
+        }
         if($request->has('email') && $request->email != null){
             $userModel = User::where(['email'=>$request->email])->first();
             if($userModel != null){
@@ -145,6 +153,18 @@ class AuthController extends Controller
         }else{
             return response()->json(['errors'=>['email'=>['Email id field is required!']],'message'=>'Email id is missing!'],422);
         }
+    }
+
+    public function getUserProfile(){
+        $userDetails = Auth::user();
+        return response()->json(['errors'=>null,'user_details'=>$userDetails->toArray()]);
+    }
+
+    public function updateProfile(ProfileUpdateRequest $request){
+        $userModel = Auth::user();
+        $userModel->fill($request->all());
+        $userModel->save();
+        return response()->json(['errors'=>null,'message'=>'Profile updated successfully!','user'=>$userModel]);
     }
 
 }

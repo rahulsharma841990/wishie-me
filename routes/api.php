@@ -40,6 +40,10 @@ Route::group(['middleware'=>'cors'], function(){
         Route::get('dashboard','API\BirthdayController@getBirthdays');
         Route::put('birthday/update/{id}','API\BirthdayController@edit');
         Route::delete('birthday/delete/{id}','API\BirthdayController@delete');
+
+        //User Profile
+        Route::get('profile','API\AuthController@getUserProfile');
+        Route::put('profile','API\AuthController@updateProfile');
     });
 });
 Route::group(['middleware' => ['web']], function() {
