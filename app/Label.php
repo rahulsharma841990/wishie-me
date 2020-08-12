@@ -18,4 +18,9 @@ class Label extends Model
     public function getTotalCountsAttribute(){
         return $this->hasMany(LabelMapping::class)->whereUserId(Auth::user()->id)->count();
     }
+
+    public function birthdays(){
+        return $this->hasManyThrough(Birthday::class,LabelMapping::class,'label_id',
+            'id','id','birthday_id')->where('user_id',Auth::user()->id);
+    }
 }

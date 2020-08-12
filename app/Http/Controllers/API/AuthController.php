@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Label;
+use App\Reminder;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,8 +23,8 @@ class AuthController extends Controller
             $imageName = $this->uploadFile($request);
             $requestData['profile_image'] = $imageName;
         }
-
         $user = User::create($requestData);
+        $this->createReminder($user);
         $accessToken = $user->createToken('authToken')->accessToken;
         return response(['errors'=>null,'message'=>'user created successfully!','user'=>$user,'access_token'=>$accessToken]);
     }
@@ -96,6 +98,7 @@ class AuthController extends Controller
                     return $item != null;
                 });
                 $userModel->fill($requestData)->save();
+                $this->createReminder($userModel);
                 return response()->json(['errors'=>null,'message'=>'User logged in successfully!',
                     'user'=>$userModel->toArray(),'access_token'=>$userModel->createToken('authToken')->accessToken]);
             }else{
@@ -106,6 +109,7 @@ class AuthController extends Controller
                 }
                 $requestData['password'] = Hash::make($request->password);
                 $user = User::create($requestData);
+                $this->createReminder($userModel);
                 return response()->json(['errors'=>null,'message'=>'user created successfully!',
                     'user'=>$user->toArray(),'access_token'=>$user->createToken('authToken')->accessToken]);
             }
@@ -117,6 +121,7 @@ class AuthController extends Controller
             }
             $requestData['password'] = Hash::make($request->password);
             $user = User::create($requestData)->toArray();
+            $this->createReminder($userModel);
             return response()->json(['errors'=>null,'message'=>'user created successfully!',
                 'user'=>$user,'access_token'=>$user->createToken('authToken')->accessToken]);
         }
@@ -165,6 +170,17 @@ class AuthController extends Controller
         $userModel->fill($request->all());
         $userModel->save();
         return response()->json(['errors'=>null,'message'=>'Profile updated successfully!','user'=>$userModel]);
+    }
+
+    protected function createReminder($user){
+        $adminLabels = Label::whereCreatedBy(0)->get();
+        foreach($adminLabels as $k => $label){
+            $reminderModel = new Reminder;
+            $reminderModel->label_id = $label->id;
+            $reminderModel->title = 'Day of Occasion';
+            $reminderModel->user_id = $user->id;
+            $reminderModel->save();
+        }
     }
 
 }

@@ -44,8 +44,16 @@ Route::group(['middleware'=>'cors'], function(){
         //User Profile
         Route::get('profile','API\AuthController@getUserProfile');
         Route::put('profile','API\AuthController@updateProfile');
+
+        //Reminder
+        Route::post('reminder','API\RemindersController@saveReminder');
+        Route::get('reminders','API\RemindersController@getReminders');
+        Route::put('reminder/{id}','API\RemindersController@updateReminder');
+        Route::delete('reminder/{id}','API\RemindersController@deleteReminder');
+
     });
 });
 Route::group(['middleware' => ['web']], function() {
     Route::get('image/{disk}/{image}',['as'=>'public-image','uses'=>'API\ImageController@image']);
+    Route::get('tone/{disk}/{file}',['as'=>'public-tone','uses'=>'API\ToneController@tone']);
 });

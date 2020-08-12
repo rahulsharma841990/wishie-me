@@ -65,6 +65,11 @@ return [
             'root' => storage_path('app/birthday')
         ],
 
+        'reminders' => [
+            'driver' => 'local',
+            'root' => storage_path('app/reminders')
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
