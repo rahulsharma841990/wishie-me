@@ -109,7 +109,7 @@ class AuthController extends Controller
                 }
                 $requestData['password'] = Hash::make($request->password);
                 $user = User::create($requestData);
-                $this->createReminder($userModel);
+                $this->createReminder($user);
                 return response()->json(['errors'=>null,'message'=>'user created successfully!',
                     'user'=>$user->toArray(),'access_token'=>$user->createToken('authToken')->accessToken]);
             }
@@ -121,7 +121,7 @@ class AuthController extends Controller
             }
             $requestData['password'] = Hash::make($request->password);
             $user = User::create($requestData)->toArray();
-            $this->createReminder($userModel);
+            $this->createReminder($user);
             return response()->json(['errors'=>null,'message'=>'user created successfully!',
                 'user'=>$user,'access_token'=>$user->createToken('authToken')->accessToken]);
         }
