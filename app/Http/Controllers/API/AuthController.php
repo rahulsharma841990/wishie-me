@@ -178,6 +178,7 @@ class AuthController extends Controller
             $reminderModel = new Reminder;
             $reminderModel->label_id = $label->id;
             $reminderModel->title = 'Day of Occasion';
+            $reminderModel->time = '10:00 AM';
             $reminderModel->user_id = $user->id;
             $reminderModel->save();
         }
