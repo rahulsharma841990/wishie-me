@@ -29,6 +29,6 @@ class Label extends Model
     }
 
     public function reminders(){
-        return $this->hasMany(Reminder::class,'label_id','id');
+        return $this->hasMany(Reminder::class,'label_id','id')->where('user_id',Auth::user()->id);
     }
 }
