@@ -14,13 +14,8 @@ use Illuminate\Support\Str;
 class RemindersController extends Controller
 {
     public function saveReminder(ReminderRequest $request){
-        $fileName = '';
-        if($request->hasFile('tone')){
-            $fileName = $this->uploadTone($request);
-        }
         $reminderModel = new Reminder;
-        $reminderModel->fill($request->except(['tone']));
-        $reminderModel->tone = $fileName;
+        $reminderModel->fill($request->all());
         $reminderModel->user_id = Auth::user()->id;
         $reminderModel->save();
         $reminder = Reminder::with(['label.birthdays'])->find($reminderModel->id);
@@ -43,16 +38,8 @@ class RemindersController extends Controller
     }
 
     public function updateReminder(Request $request,$id){
-        $fileName = '';
-        if($request->hasFile('tone')){
-            $fileName = $this->uploadTone($request);
-        }
         $reminderModel = Reminder::find($id);
-        $requestData = $request->except(['tone']);
-        if($fileName != ''){
-            $reminderModel->tone = $fileName;
-        }
-        $reminderModel->fill($requestData);
+        $reminderModel->fill($request->all());
         $reminderModel->save();
         return response()->json(['errors'=>null,'message'=>'Reminder updated successfully!',
             'reminder'=>$reminderModel->toArray()]);

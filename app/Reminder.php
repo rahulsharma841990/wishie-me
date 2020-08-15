@@ -12,9 +12,9 @@ class Reminder extends Model
         return $this->belongsTo(Label::class,'label_id','id');
     }
 
-    public function getToneAttribute($value){
-        if($value != null){
-            return url(route('public-tone',['disk'=>'reminders','file'=>$value]));
-        }
-    }
+//    public function getToneAttribute($value){
+//        if($value != null){
+//            return url(route('public-tone',['disk'=>'reminders','file'=>$value]));
+//        }
+//    }
 }
