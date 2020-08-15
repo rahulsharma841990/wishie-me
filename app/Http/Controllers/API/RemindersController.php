@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReminderRequest;
+use App\Label;
 use App\Reminder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,9 +37,9 @@ class RemindersController extends Controller
 
     public function getReminders(){
         $user = Auth::user()->id;
-        $remindersModel = Reminder::with('label')->whereUserId($user)->get();
+        $labels = Label::with(['reminders'])->where('created_by',0)->orWhere('created_by',$user)->get();
         return response()->json(['errors'=>null,'message'=>'Reminders collected successfully!',
-            'reminders'=>$remindersModel->toArray()]);
+            'reminders'=>$labels->toArray()]);
     }
 
     public function updateReminder(Request $request,$id){
