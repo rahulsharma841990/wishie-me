@@ -26,7 +26,7 @@ class LabelsController extends Controller
     }
 
     public function getLabels(){
-        $labelsModel = Label::whereCreatedBy(Auth::user()->id)->orWhere('created_by',0)->get();
+        $labelsModel = Label::with(['birthdays'])->whereCreatedBy(Auth::user()->id)->orWhere('created_by',0)->get();
         return response()->json(['errors'=>null,'labels'=>$labelsModel]);
     }
 
@@ -61,5 +61,11 @@ class LabelsController extends Controller
             $labelCountArray[$label[0]->label->label_name] = $label->count();
         }
         return response()->json(['errors'=>null,'labels'=>$labelCountArray]);
+    }
+
+    public function makeLabelEmpty($id){
+        $user = Auth::user();
+        LabelMapping::where(['user_id'=>$user->id,'label_id'=>$id])->update(['label_id'=>2]);
+        return response()->json(['errors'=>null,'message'=>'Label refreshed successfully!']);
     }
 }

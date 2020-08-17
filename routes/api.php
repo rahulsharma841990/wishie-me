@@ -34,6 +34,7 @@ Route::group(['middleware'=>'cors'], function(){
         Route::delete('labels/{id}','API\LabelsController@destroy');
         Route::put('labels/{id}','API\LabelsController@update');
         Route::get('label/counts','API\LabelsController@labelCounts');
+        Route::get('label/empty/{id}','API\LabelsController@makeLabelEmpty');
 
         //Birthday
         Route::post('birthday','API\BirthdayController@create');
