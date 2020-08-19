@@ -52,6 +52,12 @@ Route::group(['middleware'=>'cors'], function(){
         Route::put('reminder/{id}','API\RemindersController@updateReminder');
         Route::delete('reminder/{id}','API\RemindersController@deleteReminder');
 
+        //Refresh Token
+        Route::post('refresh/token','API\AuthController@refreshToken');
+
+        //Notification
+        Route::post('notification/send','API\NotificationController@sendNotification');
+
     });
 });
 Route::group(['middleware' => ['web']], function() {

@@ -184,4 +184,15 @@ class AuthController extends Controller
         }
     }
 
+    public function refreshToken(Request $request){
+        $rules = [
+            'device_token' => 'required'
+        ];
+        $request->validate($rules);
+        $user = Auth::user();
+        $user->device_token = $request->device_token;
+        $user->save();
+        return response()->json(['errors'=>null,'message'=>'Device token updated successfully!']);
+    }
+
 }
