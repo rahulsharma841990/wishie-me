@@ -55,7 +55,7 @@ class LabelsController extends Controller
     }
 
     public function labelCounts(){
-        $labelModel = LabelMapping::with(['labegetLabelsl'])->whereUserId(Auth::user()->id)->get();
+        $labelModel = LabelMapping::with(['label'])->whereUserId(Auth::user()->id)->get();
         $labelCountArray = [];
         foreach($labelModel->groupBy('label_id') as $key => $label){
             $labelCountArray[$label[0]->label->label_name] = $label->count();
