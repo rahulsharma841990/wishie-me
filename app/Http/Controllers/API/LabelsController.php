@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LabelRequest;
 use App\Label;
 use App\LabelMapping;
+use App\Reminder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,6 +22,12 @@ class LabelsController extends Controller
         $labelModel->fill($request->all());
         $labelModel->created_by = $userId;
         $labelModel->save();
+        $reminderModel = new Reminder;
+        $reminderModel->label_id = $labelModel->id;
+        $reminderModel->title = 'Day of Occasion';
+        $reminderModel->time = '10:00 AM';
+        $reminderModel->user_id = $userId;
+        $reminderModel->save();
         $labelsModel = Label::whereCreatedBy($userId)->orWhere('created_by',0)->get();
         return response()->json(['errors'=>null,'message'=>'Label created successfully!','label'=>$labelsModel]);
     }
