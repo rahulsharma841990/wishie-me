@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -18,7 +19,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name', 'email', 'password','first_name','last_name','country_code','phone','gender','profile_image',
-        'phone','country_code','facebook_id','gmail_id','twitter_id','apple_id','username'
+        'phone','country_code','facebook_id','gmail_id','twitter_id','apple_id','username','dob'
     ];
 
     /**
@@ -45,5 +46,13 @@ class User extends Authenticatable
         }else{
             return null;
         }
+    }
+
+    public function setDobAttribute($value){
+        $this->attributes['dob'] = Carbon::parse($value)->format('Y-m-d');
+    }
+
+    public function getDobAttribute($value){
+        return Carbon::parse($value)->format('d-m-Y');
     }
 }
