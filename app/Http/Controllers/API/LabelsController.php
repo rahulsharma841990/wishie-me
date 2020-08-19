@@ -27,6 +27,7 @@ class LabelsController extends Controller
         $reminderModel->title = 'Day of Occasion';
         $reminderModel->time = '10:00 AM';
         $reminderModel->user_id = $userId;
+        $reminderModel->tone = 'happy_birthday.mpeg';
         $reminderModel->save();
         $labelsModel = Label::whereCreatedBy($userId)->orWhere('created_by',0)->get();
         return response()->json(['errors'=>null,'message'=>'Label created successfully!','label'=>$labelsModel]);
