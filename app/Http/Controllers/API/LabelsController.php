@@ -26,7 +26,7 @@ class LabelsController extends Controller
     }
 
     public function getLabels(){
-        $labelsModel = Label::with(['birthdays'])->whereCreatedBy(Auth::user()->id)->orWhere('created_by',0)->get();
+        $labelsModel = Label::with(['birthdays.labels'])->whereCreatedBy(Auth::user()->id)->orWhere('created_by',0)->get();
         return response()->json(['errors'=>null,'labels'=>$labelsModel]);
     }
 
@@ -55,7 +55,7 @@ class LabelsController extends Controller
     }
 
     public function labelCounts(){
-        $labelModel = LabelMapping::with(['label'])->whereUserId(Auth::user()->id)->get();
+        $labelModel = LabelMapping::with(['labegetLabelsl'])->whereUserId(Auth::user()->id)->get();
         $labelCountArray = [];
         foreach($labelModel->groupBy('label_id') as $key => $label){
             $labelCountArray[$label[0]->label->label_name] = $label->count();
