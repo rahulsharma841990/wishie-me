@@ -167,7 +167,11 @@ class AuthController extends Controller
 
     public function updateProfile(ProfileUpdateRequest $request){
         $userModel = Auth::user();
-        $userModel->fill($request->all());
+        $userModel->fill($request->except(['profile_image']));
+        if($request->has('profile_image') && $request->profile_image != null){
+            $imageName = $this->uploadFile($request);
+            $userModel->profile_image = $imageName;
+        }
         $userModel->save();
         return response()->json(['errors'=>null,'message'=>'Profile updated successfully!','user'=>$userModel]);
     }
