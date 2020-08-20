@@ -48,6 +48,16 @@ class AuthController extends Controller
         return $imageName;
     }
 
+    private function uploadHeaderFile($request){
+        $image = $request->input('header_image');
+        preg_match("/data:image\/(.*?);/",$image,$image_extension);
+        $image = preg_replace('/data:image\/(.*?);base64,/','',$image);
+        $image = str_replace(' ', '+', $image);
+        $imageName = 'image_' . time() . '.' . $image_extension[1];
+        Storage::disk('profile_images')->put($imageName,base64_decode($image));
+        return $imageName;
+    }
+
     public function login(LoginRequest $request){
         $where = $this->credentials($request);
         $user = User::Where($where)->first();
@@ -167,10 +177,14 @@ class AuthController extends Controller
 
     public function updateProfile(ProfileUpdateRequest $request){
         $userModel = Auth::user();
-        $userModel->fill($request->except(['profile_image']));
+        $userModel->fill($request->except(['profile_image','header_image']));
         if($request->has('profile_image') && $request->profile_image != null){
             $imageName = $this->uploadFile($request);
             $userModel->profile_image = $imageName;
+        }
+        if($request->has('header_image') && $request->header_image != null){
+            $imageName = $this->uploadHeaderFile($request);
+            $userModel->header_image = $imageName;
         }
         $userModel->save();
         return response()->json(['errors'=>null,'message'=>'Profile updated successfully!','user'=>$userModel]);
