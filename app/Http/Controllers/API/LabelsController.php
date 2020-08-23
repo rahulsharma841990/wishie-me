@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Auth;
 class LabelsController extends Controller
 {
     public function create(LabelRequest $request){
-        $isLabelExists = Label::whereLabelName($request->label_name)->first();
+        $user = Auth::user();
+        $isLabelExists = Label::whereLabelName($request->label_name)->whereCreatedBy($user->id)->first();
         if($isLabelExists != null){
             return response()->json(['errors'=>['label'=>['Label '.$request->label_name.' is already exists']],'label'=>$isLabelExists],422);
         }
