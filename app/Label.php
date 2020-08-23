@@ -24,6 +24,7 @@ class Label extends Model
             'id','id','birthday_id')->where('user_id',Auth::user()->id);
     }
 
+
     public function getBirthdayCountsAttribute(){
         return $this->birthdays()->count();
     }

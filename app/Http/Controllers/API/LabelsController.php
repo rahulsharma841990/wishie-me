@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LabelRequest;
 use App\Label;
 use App\LabelMapping;
+use Carbon\Carbon;
 use App\Reminder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -35,7 +36,39 @@ class LabelsController extends Controller
 
     public function getLabels(){
         $labelsModel = Label::with(['birthdays.labels'])->whereCreatedBy(Auth::user()->id)->orWhere('created_by',0)->get();
-        return response()->json(['errors'=>null,'labels'=>$labelsModel]);
+        $labelsArray = [];
+        foreach($labelsModel as $k => $label){
+            $labelsArray[$k] = $label->toArray();
+            if(!$label->birthdays->isEmpty()){
+                $toSort = $label->birthdays->toArray();
+                usort($toSort,function($a,$b){
+                    $date1 = explode('-',$a['birth_date']);
+                    $date2 = explode('-',$b['birth_date']);
+                    if(isset($date1[2]) && isset($date2[2])){
+                        if(Carbon::parse($a['birth_date'])->format('m-d') == Carbon::parse($b['birth_date'])->format('m-d')){return 0;}
+                        return (Carbon::parse($a['birth_date'])->format('m-d') < Carbon::parse($b['birth_date'])->format('m-d'))? -1:1;
+                    }elseif(isset($date1[2]) && !isset($date2[2])){
+                        if(Carbon::parse($a['birth_date'])->format('m-d') == Carbon::createFromFormat('m-d',$b['birth_date'])->format('m-d')){return 0;}
+                        return (Carbon::parse($a['birth_date'])->format('m-d') < Carbon::createFromFormat('m-d',$b['birth_date'])->format('m-d'))? -1:1;
+                    }elseif(!isset($date1[2]) && isset($date2[2])){
+                        if(Carbon::createFromFormat('m-d',$a['birth_date'])->format('m-d') == Carbon::parse($b['birth_date'])->format('m-d')){return 0;}
+                        return (Carbon::createFromFormat('m-d',$a['birth_date'])->format('m-d') < Carbon::parse($b['birth_date'])->format('m-d'))? -1:1;
+                    }elseif(!isset($date1[2]) && !isset($date2[2])){
+                        if(Carbon::createFromFormat('m-d',$a['birth_date'])->format('m-d') == Carbon::createFromFormat('m-d',$b['birth_date'])->format('m-d')){return 0;}
+                        return (Carbon::createFromFormat('m-d',$a['birth_date'])->format('m-d') < Carbon::createFromFormat('m-d',$b['birth_date'])->format('m-d'))? -1:1;
+                    }
+                });
+                $low = collect($toSort)->filter(function($birthday){
+                    return (Carbon::parse($birthday['birthday'])->format('Y') == Carbon::today()->format('Y'));
+                })->values()->toArray();
+                $high = collect($toSort)->filter(function($birthday){
+                    return (Carbon::parse($birthday['birthday'])->format('Y') > Carbon::today()->format('Y'));
+                })->values()->toArray();
+                array_push($low,$high);
+                $labelsArray[$k]['birthdays'] = $low;
+            }
+        }
+        return response()->json(['errors'=>null,'labels'=>$labelsArray]);
     }
 
     public function destroy($id){
