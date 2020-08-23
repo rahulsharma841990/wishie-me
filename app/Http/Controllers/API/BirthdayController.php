@@ -272,4 +272,10 @@ class BirthdayController extends Controller
         LabelMapping::where(['user_id'=>Auth::user()->id,'birthday_id'=>$id])->delete();
         return response()->json(['errors'=>null,'message'=>'Birthday deleted successfully!']);
     }
+
+    public function birthdaysList(){
+        $user = Auth::user();
+        $birthdayModel = Birthday::whereCreatedBy($user->id)->orderBy('first_name')->get();
+        return response()->json(['errors'=>null,'message'=>'Birthdays collected successfully!','birthdays'=>$birthdayModel]);
+    }
 }

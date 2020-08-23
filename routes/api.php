@@ -41,6 +41,7 @@ Route::group(['middleware'=>'cors'], function(){
         Route::get('dashboard','API\BirthdayController@getBirthdays');
         Route::put('birthday/update/{id}','API\BirthdayController@edit');
         Route::delete('birthday/delete/{id}','API\BirthdayController@delete');
+        Route::get('birthdays','API\BirthdayController@birthdaysList');
 
         //User Profile
         Route::get('profile','API\AuthController@getUserProfile');

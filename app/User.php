@@ -49,6 +49,14 @@ class User extends Authenticatable
         }
     }
 
+    public function getHeaderImageAttribute($value){
+        if($value != null){
+            return url(route('public-image',['disk'=>'profile_images','image'=>$value]));
+        }else{
+            return null;
+        }
+    }
+
     public function setDobAttribute($value){
         $this->attributes['dob'] = Carbon::parse($value)->format('Y-m-d');
     }

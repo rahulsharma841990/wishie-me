@@ -17,6 +17,7 @@ class RemindersController extends Controller
         $reminderModel = new Reminder;
         $reminderModel->fill($request->all());
         $reminderModel->user_id = Auth::user()->id;
+        $reminderModel->is_manual = 1;
         $reminderModel->save();
         $reminder = Reminder::with(['label.birthdays'])->find($reminderModel->id);
         return response()->json(['errors'=>null,'message'=>'Reminder saved successfully!','reminder'=>$reminder]);

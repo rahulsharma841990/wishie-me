@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reminder extends Model
 {
-    protected $fillable = ['label_id','title','days_before','time','tone','user_id'];
+    protected $fillable = ['label_id','title','days_before','time','tone','user_id','is_manual','is_enable'];
 
     public function label(){
         return $this->belongsTo(Label::class,'label_id','id');
