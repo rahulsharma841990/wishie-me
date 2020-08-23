@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LabelRequest;
+use App\Http\Requests\MoveBirthdaysRequest;
 use App\Label;
 use App\LabelMapping;
 use Carbon\Carbon;
@@ -110,5 +111,11 @@ class LabelsController extends Controller
         $user = Auth::user();
         LabelMapping::where(['user_id'=>$user->id,'label_id'=>$id])->update(['label_id'=>2]);
         return response()->json(['errors'=>null,'message'=>'Label refreshed successfully!']);
+    }
+
+    public function moveBirthdays(MoveBirthdaysRequest $request){
+        LabelMapping::whereIn('birthday_id',$request->birthdays)
+            ->update(['label_id'=>$request->label_id]);
+        return response()->json(['errors'=>null,'message'=>'Birthday moved successfully!']);
     }
 }
