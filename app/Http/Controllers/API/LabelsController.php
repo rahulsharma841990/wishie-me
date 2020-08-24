@@ -67,8 +67,7 @@ class LabelsController extends Controller
                 $high = collect($toSort)->filter(function($birthday){
                     return (Carbon::parse($birthday['birthday'])->format('Y') > Carbon::today()->format('Y'));
                 })->values()->toArray();
-                array_push($low,$high);
-                $labelsArray[$k]['birthdays'] = $low;
+                $labelsArray[$k]['birthdays'] = array_merge($low,$high);
             }
         }
         return response()->json(['errors'=>null,'labels'=>$labelsArray]);
