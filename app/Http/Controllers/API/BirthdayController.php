@@ -38,7 +38,8 @@ class BirthdayController extends Controller
     }
 
     public function createBirthdayReminder($birthdayModel, $label){
-        $labelReminders = Reminder::whereLabelId($label[0])->get();
+        $user = Auth::user();
+        $labelReminders = Reminder::whereLabelId($label[0])->where(['user_id'=>$user->id])->get();
         $user = Auth::user();
         foreach($labelReminders as $key => $reminder){
             $birthdayReminderModel = new BirthdayReminder;
