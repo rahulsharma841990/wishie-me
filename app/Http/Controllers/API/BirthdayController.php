@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Birthday;
+use App\BirthdayReminder;
 use App\Http\Requests\BirthdayRequest;
 use App\Http\Controllers\Controller;
 use App\LabelMapping;
+use App\Reminder;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,8 +32,27 @@ class BirthdayController extends Controller
         $requestData['created_by'] = Auth::user()->id;
         $birthdayModel->fill($requestData);
         $birthdayModel->save();
+        $this->createBirthdayReminder($birthdayModel,$request->label);
         $this->saveBirthdayLabels($request,$birthdayModel);
         return response()->json(['errors'=>null,'message'=>'Birthday created successfully!']);
+    }
+
+    public function createBirthdayReminder($birthdayModel, $label){
+        $labelReminders = Reminder::whereLabelId($label[0])->get();
+        $user = Auth::user();
+        foreach($labelReminders as $key => $reminder){
+            $birthdayReminderModel = new BirthdayReminder;
+            $birthdayReminderModel->birthday_id = $birthdayModel->id;
+            $birthdayReminderModel->reminder_id = $reminder->id;
+            $birthdayReminderModel->title = $reminder->title;
+            $birthdayReminderModel->days_before = $reminder->days_before;
+            $birthdayReminderModel->time = $reminder->time;
+            $birthdayReminderModel->tone = $reminder->tone;
+            $birthdayReminderModel->user_id = $user->id;
+            $birthdayReminderModel->is_manual = 0;
+            $birthdayReminderModel->save();
+        }
+        return true;
     }
 
     protected function saveBirthdayLabels($request, $birthdayModel){
