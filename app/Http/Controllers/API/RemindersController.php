@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\BirthdayReminder;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReminderRequest;
 use App\Label;
@@ -14,11 +15,25 @@ use Illuminate\Support\Str;
 class RemindersController extends Controller
 {
     public function saveReminder(ReminderRequest $request){
+        $user = Auth::user();
         $reminderModel = new Reminder;
         $reminderModel->fill($request->all());
-        $reminderModel->user_id = Auth::user()->id;
+        $reminderModel->user_id = $user->id;
         $reminderModel->is_manual = 1;
         $reminderModel->save();
+        $labelModel = Label::with(['birthdays'])->find($request->label_id);
+        foreach($labelModel->birthdays as $key => $birthday){
+            $birthdayReminderModel = new BirthdayReminder;
+            $birthdayReminderModel->birthday_id = $birthday->id;
+            $birthdayReminderModel->reminder_id = $reminderModel->id;
+            $birthdayReminderModel->title = $request->title;
+            $birthdayReminderModel->days_before = $request->days_before;
+            $birthdayReminderModel->time = $request->time;
+            $birthdayReminderModel->tone = $request->tone;
+            $birthdayReminderModel->user_id = $user->id;
+            $birthdayReminderModel->is_manual = 0;
+            $birthdayReminderModel->save();
+        }
         $reminder = Reminder::with(['label.birthdays'])->find($reminderModel->id);
         return response()->json(['errors'=>null,'message'=>'Reminder saved successfully!','reminder'=>$reminder]);
     }
