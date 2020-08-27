@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Birthday;
 use App\BirthdayReminder;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateBirthdayReminderRequest;
@@ -18,7 +19,9 @@ class BirthdayReminderController extends Controller
 
     public function create(CreateBirthdayReminderRequest $request, $birthday_id){
         $user = Auth::user();
+        $birthday = Birthday::with(['labels.reminders'])->find($birthday_id);
         $birthdayReminderModel = new BirthdayReminder;
+        $birthdayReminderModel->reminder_id = $birthday->labels[0]->reminders[0]->id;
         $birthdayReminderModel->birthday_id = $birthday_id;
         $birthdayReminderModel->title = $request->title;
         $birthdayReminderModel->days_before = $request->days_before;

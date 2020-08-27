@@ -63,7 +63,14 @@ class RemindersController extends Controller
 
     public function deleteReminder($reminderId){
         $user = Auth::user()->id;
-        $reminderModel = Reminder::where(['user_id'=>$user,'id'=>$reminderId])->delete();
-        return response()->json(['error'=>null,'message'=>'Reminder deleted successfully!']);
+        Reminder::where(['user_id'=>$user,'id'=>$reminderId])->delete();
+        BirthdayReminder::where(['reminder_id'=>$reminderId])->delete();
+        return response()->json(['errors'=>null,'message'=>'Reminder deleted successfully!']);
+    }
+
+    public function enableDisable($reminder_id,$status){
+        Reminder::where(['id'=>$reminder_id])->update(['is_enable'=>$status]);
+        BirthdayReminder::where(['reminder_id'=>$reminder_id])->update(['is_enable'=>$status]);
+        return response()->json(['errors'=>null,'message'=>'Reminder status update successfully!']);
     }
 }
