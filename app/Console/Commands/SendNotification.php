@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\BirthdayReminder;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class SendNotification extends Command
@@ -18,7 +20,7 @@ class SendNotification extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'To send the notification to all users';
 
     /**
      * Create a new command instance.
@@ -37,6 +39,20 @@ class SendNotification extends Command
      */
     public function handle()
     {
+        $birthdayReminders = BirthdayReminder::with(['birthdays'])->get();
+        foreach($birthdayReminders as $key => $reminder){
+            $birthDate = Carbon::parse($reminder->birthdays->toArray()['birth_date']);
+            $explodedVal = explode(' ',$reminder->days_before);
+            if($explodedVal[1] == 'day' || $explodedVal[1] == 'days'){
+                if(Carbon::now() == $birthDate->subDay($explodedVal[0])){
 
+                }
+            }
+            if($explodedVal[1] == 'week' || $explodedVal[1] == 'weeks'){
+                if(Carbon::now() == $birthDate->subWeeks($explodedVal[0])){
+                    
+                }
+            }
+        }
     }
 }

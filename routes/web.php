@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+Route::get('testing', function(){
+    \Illuminate\Support\Facades\Artisan::call('notification:send');
+});
+
 Auth::routes();
 Route::get('/logout', 'MetricaController@logout');
 

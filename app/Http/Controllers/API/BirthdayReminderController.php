@@ -50,4 +50,11 @@ class BirthdayReminderController extends Controller
         BirthdayReminder::where(['user_id'=>$user->id,'id'=>$birthday_reminder_id])->delete();
         return response()->json(['errors'=>null,'message'=>'Reminder deleted successfully!']);
     }
+
+    public function updateReminder($reminder_id, Request $request){
+        $birthdayReminderModel = BirthdayReminder::find($reminder_id);
+        $birthdayReminderModel->fill($request->all());
+        $birthdayReminderModel->save();
+        return response()->json(['errors'=>null,'message'=>'Birthday reminder updated successfully!']);
+    }
 }
