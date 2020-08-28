@@ -8,6 +8,7 @@ use Illuminate\Console\Command;
 use LaravelFCM\Message\OptionsBuilder;
 use LaravelFCM\Message\PayloadDataBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
+use FCM;
 
 class SendNotification extends Command
 {
