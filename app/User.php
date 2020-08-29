@@ -64,4 +64,8 @@ class User extends Authenticatable
     public function getDobAttribute($value){
         return Carbon::parse($value)->format('d-m-Y');
     }
+
+    public function getPhoneAttribute($value){
+        return (string)$value;
+    }
 }
