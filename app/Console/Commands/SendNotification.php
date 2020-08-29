@@ -43,7 +43,7 @@ class SendNotification extends Command
      */
     public function handle()
     {
-        $birthdayReminders = BirthdayReminder::with(['birthdays.user'])->get();
+        $birthdayReminders = BirthdayReminder::where(['is_notified'=>0])->with(['birthdays.user'])->get();
         foreach($birthdayReminders as $key => $reminder){
             if($reminder->days_before != null){
                 if($reminder->birthdays != null){
@@ -76,6 +76,8 @@ class SendNotification extends Command
                             }
                         }
                     }
+                    $reminder->is_notified = 1;
+                    $reminder->save();
                 }
             }
         }
