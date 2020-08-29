@@ -177,7 +177,7 @@ class AuthController extends Controller
 
     public function updateProfile(ProfileUpdateRequest $request){
         $userModel = Auth::user();
-        $userModel->fill($request->except(['profile_image','header_image']));
+        $userModel->fill($request->except(['profile_image','header_image','password']));
         if($request->has('profile_image') && $request->profile_image != null){
             $imageName = $this->uploadFile($request);
             $userModel->profile_image = $imageName;
@@ -185,6 +185,9 @@ class AuthController extends Controller
         if($request->has('header_image') && $request->header_image != null){
             $imageName = $this->uploadHeaderFile($request);
             $userModel->header_image = $imageName;
+        }
+        if($request->has('password')){
+            $userModel->password = Hash::make($request->password);
         }
         $userModel->save();
         return response()->json(['errors'=>null,'message'=>'Profile updated successfully!','user'=>$userModel]);
