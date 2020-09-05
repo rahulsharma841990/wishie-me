@@ -59,7 +59,7 @@ Route::group(['middleware'=>'cors'], function(){
         //Birthday Reminders
         Route::get('birthday/reminders/{birthday_id}','API\BirthdayReminderController@getBirthdayReminders');
         Route::post('birthday/reminder/{birthday_id}','API\BirthdayReminderController@create');
-        Route::put('set/reminder/{birthday_reminder_id}','API\BirthdayReminderController@enableDisableReminder');
+        Route::put('set/reminder/{birthday_id}','API\BirthdayReminderController@enableDisableReminder');
         Route::delete('birthday/reminder/{birthday_reminder_id}','API\BirthdayReminderController@deleteBirthdayReminder');
         Route::put('birthday/reminder/{reminder_id}','API\BirthdayReminderController@updateReminder');
 

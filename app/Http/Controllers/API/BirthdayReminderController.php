@@ -34,13 +34,13 @@ class BirthdayReminderController extends Controller
         return response()->json(['errors'=>null,'message'=>'Reminder created successfully!','reminder'=>$birthdayReminderModel]);
     }
 
-    public function enableDisableReminder($birthday_reminder_id, Request $request){
+    public function enableDisableReminder($birthdayId, Request $request){
         $user = Auth::user();
         $rules = [
             'enable_or_disable' => 'required'
         ];
         $request->validate($rules);
-        BirthdayReminder::where('id',$birthday_reminder_id)->where('user_id',$user->id)
+        BirthdayReminder::where('birthday_id',$birthdayId)->where('user_id',$user->id)
             ->update(['is_enable'=>$request->enable_or_disable]);
         return response()->json(['errors'=>null,'message'=>'Reminder status updated successfully!']);
     }
