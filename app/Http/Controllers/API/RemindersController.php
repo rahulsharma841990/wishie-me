@@ -21,19 +21,6 @@ class RemindersController extends Controller
         $reminderModel->user_id = $user->id;
         $reminderModel->is_manual = 1;
         $reminderModel->save();
-        $labelModel = Label::with(['birthdays'])->find($request->label_id);
-        foreach($labelModel->birthdays as $key => $birthday){
-            $birthdayReminderModel = new BirthdayReminder;
-            $birthdayReminderModel->birthday_id = $birthday->id;
-            $birthdayReminderModel->reminder_id = $reminderModel->id;
-            $birthdayReminderModel->title = $request->title;
-            $birthdayReminderModel->days_before = $request->days_before;
-            $birthdayReminderModel->time = $request->time;
-            $birthdayReminderModel->tone = $request->tone;
-            $birthdayReminderModel->user_id = $user->id;
-            $birthdayReminderModel->is_manual = 0;
-            $birthdayReminderModel->save();
-        }
         $reminder = Reminder::with(['label.birthdays'])->find($reminderModel->id);
         return response()->json(['errors'=>null,'message'=>'Reminder saved successfully!','reminder'=>$reminder]);
     }
@@ -64,7 +51,6 @@ class RemindersController extends Controller
     public function deleteReminder($reminderId){
         $user = Auth::user()->id;
         Reminder::where(['user_id'=>$user,'id'=>$reminderId])->delete();
-        BirthdayReminder::where(['reminder_id'=>$reminderId])->delete();
         return response()->json(['errors'=>null,'message'=>'Reminder deleted successfully!']);
     }
 
@@ -73,7 +59,6 @@ class RemindersController extends Controller
         $updatedReminder = Reminder::where(['label_id'=>$label_id,'user_id'=>$user->id]);
         $reminderIds = $updatedReminder->get();
         $updatedReminder->update(['is_enable'=>$status]);
-        BirthdayReminder::whereIn('reminder_id',$reminderIds->pluck('id'))->update(['is_enable'=>$status]);
         return response()->json(['errors'=>null,'message'=>'Reminder status update successfully!']);
     }
 }
