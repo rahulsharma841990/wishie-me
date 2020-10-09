@@ -21,7 +21,7 @@ class BirthdayReminderController extends Controller
         $user = Auth::user();
         $birthday = Birthday::with(['labels.reminders'])->find($birthday_id);
         $birthdayReminderModel = new BirthdayReminder;
-        $birthdayReminderModel->reminder_id = $birthday->labels[0]->reminders[0]->id;
+//        $birthdayReminderModel->reminder_id = $birthday->labels[0]->reminders[0]->id;
         $birthdayReminderModel->birthday_id = $birthday_id;
         $birthdayReminderModel->title = $request->title;
         $birthdayReminderModel->days_before = $request->days_before;

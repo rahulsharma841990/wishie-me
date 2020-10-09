@@ -4,7 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\NotificationRequest;
+use App\Http\Requests\ReadNotificationRequest;
+use App\NotificationLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use LaravelFCM\Message\OptionsBuilder;
 use LaravelFCM\Message\PayloadDataBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
@@ -34,5 +37,18 @@ class NotificationController extends Controller
         return response()->json(['errors'=>null,'number_success'=>$downstreamResponse->numberSuccess(),
             'number_failure'=>$downstreamResponse->numberFailure(),
             'number_modification'=>$downstreamResponse->numberModification()]);
+    }
+
+    public function getNotifications(){
+        $user = Auth::user();
+        $notificationModel = NotificationLog::where(['to_user_id'=>$user->id])->get();
+        return response()->json(['errors'=>null,'notifications'=>$notificationModel,'message'=>'Notifications collected successfully!']);
+    }
+
+    public function setRead(ReadNotificationRequest $request){
+        $user = Auth::user();
+        NotificationLog::where(['id'=>$request->notification_id,'to_user_id'=>$user->id])
+            ->udpate(['is_read'=>1]);
+        return response()->json(['errors'=>null,'message'=>'Notification update successfully!']);
     }
 }

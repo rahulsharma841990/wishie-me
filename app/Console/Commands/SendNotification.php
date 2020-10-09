@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\BirthdayReminder;
+use App\NotificationLog;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use LaravelFCM\Message\OptionsBuilder;
@@ -44,6 +45,7 @@ class SendNotification extends Command
     public function handle()
     {
         $birthdayReminders = BirthdayReminder::where(['is_notified'=>0])->with(['birthdays.user'])->get();
+        $notificationLogArray = [];
         foreach($birthdayReminders as $key => $reminder){
             if($reminder->days_before != null){
                 if($reminder->birthdays != null){
@@ -56,23 +58,29 @@ class SendNotification extends Command
                     if($reminder->days_before == 'Day of Occasion'){
                         if(Carbon::now()->format('m-d') == $birthDate->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
-                                'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id];
+                                'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
+                                'user_id'=>$reminder->user_id];
                             $this->sendNotification($notificationArray);
+                            $notificationLogArray[] = $notificationArray;
                         }
                     }else{
                         $explodedVal = explode(' ',$reminder->days_before);
                         if($explodedVal[1] == 'day' || $explodedVal[1] == 'days'){
                             if(Carbon::now()->format('m-d') == $birthDate->subDay($explodedVal[0])->format('m-d')){
                                 $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
-                                    'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id];
+                                    'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
+                                    'user_id'=>$reminder->user_id];
                                 $this->sendNotification($notificationArray);
+                                $notificationLogArray[] = $notificationArray;
                             }
                         }
                         if($explodedVal[1] == 'week' || $explodedVal[1] == 'weeks'){
                             if(Carbon::now()->format('m-d') == $birthDate->subWeeks($explodedVal[0])->format('m-d')){
                                 $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
-                                    'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id];
+                                    'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
+                                    'user_id'=>$reminder->user_id];
                                 $this->sendNotification($notificationArray);
+                                $notificationLogArray[] = $notificationArray;
                             }
                         }
                     }
@@ -81,6 +89,16 @@ class SendNotification extends Command
                 }
             }
         }
+        $insertArray = [];
+        foreach($notificationLogArray as $k => $notification){
+            $insertArray[] = [
+                'to_user_id' => $notification['user_id'],
+                'notification'=>$notification['name'].' birthday. Wish them Happy birthday.',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ];
+        }
+        NotificationLog::insert($insertArray);
     }
 
     protected function sendNotification($deviceTokens){
@@ -97,7 +115,6 @@ class SendNotification extends Command
         $data = $dataBuilder->build();
         $token = $deviceTokens['token'];
         $downstreamResponse = FCM::sendTo($token, $option, $notification, $data);
-
         return response()->json(['errors'=>null,'number_success'=>$downstreamResponse->numberSuccess(),
             'number_failure'=>$downstreamResponse->numberFailure(),
             'number_modification'=>$downstreamResponse->numberModification()]);

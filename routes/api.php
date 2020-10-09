@@ -68,6 +68,8 @@ Route::group(['middleware'=>'cors'], function(){
 
         //Notification
         Route::post('notification/send','API\NotificationController@sendNotification');
+        Route::get('notifications','API\NotificationController@getNotifications');
+        Route::put('notification/read','API\NotificationController@setRead');
 
     });
 });
