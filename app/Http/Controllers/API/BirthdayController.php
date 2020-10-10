@@ -32,7 +32,7 @@ class BirthdayController extends Controller
         $requestData['created_by'] = Auth::user()->id;
         $birthdayModel->fill($requestData);
         $birthdayModel->save();
-        $this->createBirthdayReminder($birthdayModel,$request->label);
+//        $this->createBirthdayReminder($birthdayModel,$request->label);
         $this->saveBirthdayLabels($request,$birthdayModel);
         return response()->json(['errors'=>null,'message'=>'Birthday created successfully!']);
     }
