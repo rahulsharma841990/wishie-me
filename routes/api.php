@@ -67,7 +67,7 @@ Route::group(['middleware'=>'cors'], function(){
         Route::post('refresh/token','API\AuthController@refreshToken');
 
         //Notification
-        Route::post('notification/send','API\NotificationController@sendNotification');
+        Route::post('notification/send','API\NotificationCobirthday/reminderntroller@sendNotification');
         Route::get('notifications','API\NotificationController@getNotifications');
         Route::put('notification/read','API\NotificationController@setRead');
 

@@ -11,4 +11,8 @@ class BirthdayReminder extends Model
     public function birthdays(){
         return $this->belongsTo(Birthday::class,'birthday_id','id');
     }
+
+    public function reminder(){
+        return $this->belongsTo(Reminder::class, 'reminder_id','id');
+    }
 }

@@ -29,7 +29,7 @@ class BirthdayReminderController extends Controller
         $birthdayReminderModel->tone = $request->tone;
         $birthdayReminderModel->user_id = $user->id;
         $birthdayReminderModel->is_manual = 1;
-        $birthdayReminderModel->is_enable = 0;
+        $birthdayReminderModel->is_enable = 1;
         $birthdayReminderModel->save();
 
         return response()->json(['errors'=>null,'message'=>'Reminder created successfully!','reminder'=>$birthdayReminderModel]);

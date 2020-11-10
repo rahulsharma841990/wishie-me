@@ -44,48 +44,92 @@ class SendNotification extends Command
      */
     public function handle()
     {
-        $birthdayReminders = BirthdayReminder::where(['is_notified'=>0])->with(['birthdays.user'])->get();
+        $birthdayReminders = BirthdayReminder::where(['is_notified'=>0])->with(['birthdays.user','reminder'])->get();
         $notificationLogArray = [];
         foreach($birthdayReminders as $key => $reminder){
-            if($reminder->days_before != null){
-                if($reminder->birthdays != null){
-                    $explodedDate = explode('-',$reminder->birthdays->toArray()['birth_date']);
-                    if(!isset($explodedDate[2])){
-                        $birthDate = Carbon::createFromFormat('m-d',$reminder->birthdays->toArray()['birth_date']);
-                    }else{
-                        $birthDate = Carbon::parse($reminder->birthdays->toArray()['birth_date']);
-                    }
-                    if($reminder->days_before == 'Day of Occasion'){
-                        if(Carbon::now()->format('m-d') == $birthDate->format('m-d')){
-                            $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
-                                'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id];
-                            $this->sendNotification($notificationArray);
-                            $notificationLogArray[] = $notificationArray;
+            if($reminder->is_enable == 1){
+                if($reminder->days_before != null){
+                    if($reminder->birthdays != null){
+                        $explodedDate = explode('-',$reminder->birthdays->toArray()['birth_date']);
+                        if(!isset($explodedDate[2])){
+                            $birthDate = Carbon::createFromFormat('m-d',$reminder->birthdays->toArray()['birth_date']);
+                        }else{
+                            $birthDate = Carbon::parse($reminder->birthdays->toArray()['birth_date']);
                         }
-                    }else{
-                        $explodedVal = explode(' ',$reminder->days_before);
-                        if($explodedVal[1] == 'day' || $explodedVal[1] == 'days'){
-                            if(Carbon::now()->format('m-d') == $birthDate->subDay($explodedVal[0])->format('m-d')){
+                        if($reminder->days_before == 'Day of Occasion'){
+                            if(Carbon::now()->format('m-d') == $birthDate->format('m-d')){
                                 $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                     'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
                                     'user_id'=>$reminder->user_id];
                                 $this->sendNotification($notificationArray);
                                 $notificationLogArray[] = $notificationArray;
                             }
+                        }else{
+                            $explodedVal = explode(' ',$reminder->days_before);
+                            if($explodedVal[1] == 'day' || $explodedVal[1] == 'days'){
+                                if(Carbon::now()->format('m-d') == $birthDate->subDay($explodedVal[0])->format('m-d')){
+                                    $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
+                                        'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
+                                        'user_id'=>$reminder->user_id];
+                                    $this->sendNotification($notificationArray);
+                                    $notificationLogArray[] = $notificationArray;
+                                }
+                            }
+                            if($explodedVal[1] == 'week' || $explodedVal[1] == 'weeks'){
+                                if(Carbon::now()->format('m-d') == $birthDate->subWeeks($explodedVal[0])->format('m-d')){
+                                    $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
+                                        'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
+                                        'user_id'=>$reminder->user_id];
+                                    $this->sendNotification($notificationArray);
+                                    $notificationLogArray[] = $notificationArray;
+                                }
+                            }
                         }
-                        if($explodedVal[1] == 'week' || $explodedVal[1] == 'weeks'){
-                            if(Carbon::now()->format('m-d') == $birthDate->subWeeks($explodedVal[0])->format('m-d')){
+                        $reminder->is_notified = 1;
+                        $reminder->save();
+                    }
+                }
+            }elseif($reminder->reminder->is_enable == 1){
+                if($reminder->reminder->days_before != null){
+                    if($reminder->birthdays != null){
+                        $explodedDate = explode('-',$reminder->birthdays->toArray()['birth_date']);
+                        if(!isset($explodedDate[2])){
+                            $birthDate = Carbon::createFromFormat('m-d',$reminder->birthdays->toArray()['birth_date']);
+                        }else{
+                            $birthDate = Carbon::parse($reminder->birthdays->toArray()['birth_date']);
+                        }
+                        if($reminder->reminder->days_before == 'Day of Occasion'){
+                            if(Carbon::now()->format('m-d') == $birthDate->format('m-d')){
                                 $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                     'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
                                     'user_id'=>$reminder->user_id];
                                 $this->sendNotification($notificationArray);
                                 $notificationLogArray[] = $notificationArray;
                             }
+                        }else{
+                            $explodedVal = explode(' ',$reminder->reminder->days_before);
+                            if($explodedVal[1] == 'day' || $explodedVal[1] == 'days'){
+                                if(Carbon::now()->format('m-d') == $birthDate->subDay($explodedVal[0])->format('m-d')){
+                                    $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
+                                        'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
+                                        'user_id'=>$reminder->user_id];
+                                    $this->sendNotification($notificationArray);
+                                    $notificationLogArray[] = $notificationArray;
+                                }
+                            }
+                            if($explodedVal[1] == 'week' || $explodedVal[1] == 'weeks'){
+                                if(Carbon::now()->format('m-d') == $birthDate->subWeeks($explodedVal[0])->format('m-d')){
+                                    $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
+                                        'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
+                                        'user_id'=>$reminder->user_id];
+                                    $this->sendNotification($notificationArray);
+                                    $notificationLogArray[] = $notificationArray;
+                                }
+                            }
                         }
+                        $reminder->is_notified = 1;
+                        $reminder->save();
                     }
-                    $reminder->is_notified = 1;
-                    $reminder->save();
                 }
             }
         }
