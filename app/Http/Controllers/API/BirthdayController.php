@@ -164,7 +164,7 @@ class BirthdayController extends Controller
     }
 
     protected function getRecentBirthdays($birthdayRecords){
-        return $birthdayRecords->filter(function($birthday){
+        $birthdays = $birthdayRecords->filter(function($birthday){
             $birthday->birthday; // compulsory just for get complete birth date
             $birthDate = $birthday->birth_date;
             $explodedDate = explode('-',$birthDate);
@@ -177,6 +177,24 @@ class BirthdayController extends Controller
                 $birthDate->format('m-d') < Carbon::today()->format('m-d')
             );
         })->values()->toArray();
+        usort($birthdays,function($a,$b){
+            $date1 = explode('-',$a['birth_date']);
+            $date2 = explode('-',$b['birth_date']);
+            if(isset($date1[2]) && isset($date2[2])){
+                if(Carbon::parse($a['birth_date'])->format('m-d') == Carbon::parse($b['birth_date'])->format('m-d')){return 0;}
+                return (Carbon::parse($a['birth_date'])->format('m-d') < Carbon::parse($b['birth_date'])->format('m-d'))? 1:-1;
+            }elseif(isset($date1[2]) && !isset($date2[2])){
+                if(Carbon::parse($a['birth_date'])->format('m-d') == Carbon::createFromFormat('m-d',$b['birth_date'])->format('m-d')){return 0;}
+                return (Carbon::parse($a['birth_date'])->format('m-d') < Carbon::createFromFormat('m-d',$b['birth_date'])->format('m-d'))? 1:-1;
+            }elseif(!isset($date1[2]) && isset($date2[2])){
+                if(Carbon::createFromFormat('m-d',$a['birth_date'])->format('m-d') == Carbon::parse($b['birth_date'])->format('m-d')){return 0;}
+                return (Carbon::createFromFormat('m-d',$a['birth_date'])->format('m-d') < Carbon::parse($b['birth_date'])->format('m-d'))? 1:-1;
+            }elseif(!isset($date1[2]) && !isset($date2[2])){
+                if(Carbon::createFromFormat('m-d',$a['birth_date'])->format('m-d') == Carbon::createFromFormat('m-d',$b['birth_date'])->format('m-d')){return 0;}
+                return (Carbon::createFromFormat('m-d',$a['birth_date'])->format('m-d') < Carbon::createFromFormat('m-d',$b['birth_date'])->format('m-d'))? 1:-1;
+            }
+        });
+        return $birthdays;
     }
 
     protected function getLaterThisMonthBirthdays($birthdayRecords){
