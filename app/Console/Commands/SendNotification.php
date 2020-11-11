@@ -89,7 +89,7 @@ class SendNotification extends Command
                         $reminder->save();
                     }
                 }
-            }elseif($reminder->reminder->is_enable == 1){
+            }elseif($reminder->reminder != null && $reminder->reminder->is_enable == 1){
                 if($reminder->reminder->days_before != null){
                     if($reminder->birthdays != null){
                         $explodedDate = explode('-',$reminder->birthdays->toArray()['birth_date']);
