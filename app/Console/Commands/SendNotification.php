@@ -65,6 +65,8 @@ class SendNotification extends Command
                                     'user_id'=>$reminder->user_id];
                                 $this->sendNotification($notificationArray);
                                 $notificationLogArray[] = $notificationArray;
+                                $reminder->is_notified = 1;
+                                $reminder->save();
                             }
                         }else{
                             $explodedVal = explode(' ',$reminder->days_before);
@@ -75,6 +77,8 @@ class SendNotification extends Command
                                         'user_id'=>$reminder->user_id];
                                     $this->sendNotification($notificationArray);
                                     $notificationLogArray[] = $notificationArray;
+                                    $reminder->is_notified = 1;
+                                    $reminder->save();
                                 }
                             }
                             if($explodedVal[1] == 'week' || $explodedVal[1] == 'weeks'){
@@ -84,11 +88,11 @@ class SendNotification extends Command
                                         'user_id'=>$reminder->user_id];
                                     $this->sendNotification($notificationArray);
                                     $notificationLogArray[] = $notificationArray;
+                                    $reminder->is_notified = 1;
+                                    $reminder->save();
                                 }
                             }
                         }
-                        $reminder->is_notified = 1;
-                        $reminder->save();
                     }
                 }
             }elseif($reminder->birthdays != null){
@@ -109,6 +113,8 @@ class SendNotification extends Command
                                     'user_id'=>$reminder->user_id];
                                 $this->sendNotification($notificationArray);
                                 $notificationLogArray[] = $notificationArray;
+                                $reminder->is_notified = 1;
+                                $reminder->save();
                             }
                         }else{
                             $explodedVal = explode(' ',$labelReminder->days_before);
@@ -119,6 +125,8 @@ class SendNotification extends Command
                                         'user_id'=>$reminder->user_id];
                                     $this->sendNotification($notificationArray);
                                     $notificationLogArray[] = $notificationArray;
+                                    $reminder->is_notified = 1;
+                                    $reminder->save();
                                 }
                             }
                             if($explodedVal[1] == 'week' || $explodedVal[1] == 'weeks'){
@@ -128,11 +136,11 @@ class SendNotification extends Command
                                         'user_id'=>$reminder->user_id];
                                     $this->sendNotification($notificationArray);
                                     $notificationLogArray[] = $notificationArray;
+                                    $reminder->is_notified = 1;
+                                    $reminder->save();
                                 }
                             }
                         }
-                        $reminder->is_notified = 1;
-                        $reminder->save();
                     }
                 }
             }
