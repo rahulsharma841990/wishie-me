@@ -16,6 +16,7 @@ class AlterTableReminders extends Migration
         Schema::table('reminders', function(Blueprint $table){
             $table->boolean('is_manual')->after('user_id')->default(1);
             $table->boolean('is_enable')->after('is_manual')->default(1);
+            $table->boolean('is_notified')->after('is_enable')->default(0);
         });
     }
 
@@ -29,6 +30,7 @@ class AlterTableReminders extends Migration
         Schema::table('reminders', function(Blueprint $table){
             $table->dropColumn('is_manual');
             $table->dropColumn('is_enabled');
+            $table->dropColumn('is_notified');
         });
     }
 }
