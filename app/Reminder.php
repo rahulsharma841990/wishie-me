@@ -19,6 +19,6 @@ class Reminder extends Model
 //    }
 
     public function birthdays(){
-        return $this->hasManyThrough(Birthday::class,LabelMapping::class,'birthday_id','id','id','label_id');
+        return $this->hasManyThrough(Birthday::class,LabelMapping::class,'label_id','id','label_id','birthday_id');
     }
 }
