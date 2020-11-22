@@ -230,9 +230,11 @@ class SendNotification extends Command
         $notification = $notificationBuilder->build();
         $data = $dataBuilder->build();
         $token = $deviceTokens['token'];
-        $downstreamResponse = FCM::sendTo($token, $option, $notification, $data);
-        return response()->json(['errors'=>null,'number_success'=>$downstreamResponse->numberSuccess(),
-            'number_failure'=>$downstreamResponse->numberFailure(),
-            'number_modification'=>$downstreamResponse->numberModification()]);
+        if($token != null){
+            $downstreamResponse = FCM::sendTo($token, $option, $notification, $data);
+            return response()->json(['errors'=>null,'number_success'=>$downstreamResponse->numberSuccess(),
+                'number_failure'=>$downstreamResponse->numberFailure(),
+                'number_modification'=>$downstreamResponse->numberModification()]);
+        }
     }
 }
