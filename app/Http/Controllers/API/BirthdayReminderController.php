@@ -55,6 +55,7 @@ class BirthdayReminderController extends Controller
     public function updateReminder($reminder_id, Request $request){
         $birthdayReminderModel = BirthdayReminder::find($reminder_id);
         $birthdayReminderModel->fill($request->all());
+        $birthdayReminderModel->is_notified = 0;
         $birthdayReminderModel->save();
         return response()->json(['errors'=>null,'message'=>'Birthday reminder updated successfully!']);
     }

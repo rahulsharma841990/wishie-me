@@ -43,6 +43,7 @@ class RemindersController extends Controller
     public function updateReminder(Request $request,$id){
         $reminderModel = Reminder::find($id);
         $reminderModel->fill($request->all());
+        $reminderModel->is_notified = 0;
         $reminderModel->save();
         return response()->json(['errors'=>null,'message'=>'Reminder updated successfully!',
             'reminder'=>$reminderModel->toArray()]);
