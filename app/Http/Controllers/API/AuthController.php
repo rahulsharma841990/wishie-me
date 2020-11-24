@@ -216,4 +216,10 @@ class AuthController extends Controller
         return response()->json(['errors'=>null,'message'=>'Device token updated successfully!']);
     }
 
+    public function searchUser($username = ''){
+        $users = User::with(['friends'])->select(['id','first_name','last_name','username'])
+            ->where('username','like','%'.$username.'%')->get();
+        return response()->json(['errors'=>null,'message'=>'Users collected successfully!','users'=>$users]);
+    }
+
 }

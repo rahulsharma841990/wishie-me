@@ -67,9 +67,15 @@ Route::group(['middleware'=>'cors'], function(){
         Route::post('refresh/token','API\AuthController@refreshToken');
 
         //Notification
-        Route::post('notification/send','API\NotificationCobirthday/reminderntroller@sendNotification');
+        Route::post('notification/send','API\NotificationController@sendNotification');
         Route::get('notifications','API\NotificationController@getNotifications');
         Route::put('notification/read','API\NotificationController@setRead');
+
+        //Search User
+        Route::get('search/user/{username?}','API\AuthController@searchUser');
+
+        //Friends
+        Route::post('send/friend/request','API\FriendsController@sendFriendRequest');
 
     });
 });

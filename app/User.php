@@ -68,4 +68,8 @@ class User extends Authenticatable
     public function getPhoneAttribute($value){
         return (string)$value;
     }
+
+    public function friends(){
+        return $this->hasMany(Friend::class,'user_id','id');
+    }
 }
