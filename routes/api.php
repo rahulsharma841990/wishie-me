@@ -76,6 +76,7 @@ Route::group(['middleware'=>'cors'], function(){
 
         //Friends
         Route::post('send/friend/request','API\FriendsController@sendFriendRequest');
+        Route::post('friend/request','API\FriendsController@acceptRejectFriendRequest');
 
     });
 });
