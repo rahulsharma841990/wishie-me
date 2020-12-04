@@ -42,4 +42,12 @@ class FriendsController extends Controller
             return response()->json(['errors'=>null,'message'=>'Friend request rejected!']);
         }
     }
+
+    public function listOfFriendRequests(){
+        $user = Auth::user();
+        $sentByMe = Friend::with(['user','friend'])->where('user_id',$user->id)->get();
+        $sendToMe = Friend::with(['user','friend'])->where('friend_id',$user->id)->get();
+        return response()->json(['errors'=>null,'message'=>'Friends collected successfully!','send_by_me'=>$sentByMe->toArray(),
+            'sent_to_me'=>$sendToMe->toArray()]);
+    }
 }

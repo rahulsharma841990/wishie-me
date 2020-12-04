@@ -77,7 +77,10 @@ Route::group(['middleware'=>'cors'], function(){
         //Friends
         Route::post('send/friend/request','API\FriendsController@sendFriendRequest');
         Route::post('friend/request','API\FriendsController@acceptRejectFriendRequest');
+        Route::get('friend/requests','API\FriendsController@listOfFriendRequests');
 
+        //Video Share
+        Route::post('upload/video','API\VideoShareController@uploadVideo');
     });
 });
 Route::group(['middleware' => ['web']], function() {
