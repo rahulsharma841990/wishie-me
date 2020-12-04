@@ -217,8 +217,10 @@ class AuthController extends Controller
     }
 
     public function searchUser($username = ''){
-        $users = User::with(['friends'])->select(['id','first_name','last_name','username'])
-            ->where('username','like','%'.$username.'%')->get();
+        $users = User::with(['friends'=>function($query){
+            $query->with('user');
+        }])->select(['id','first_name','last_name','username','profile_image'])
+            ->where('username','like','%'.$username.'%')->get()->toArray();
         return response()->json(['errors'=>null,'message'=>'Users collected successfully!','users'=>$users]);
     }
 

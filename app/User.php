@@ -23,6 +23,8 @@ class User extends Authenticatable
         'header_image'
     ];
 
+    protected $appends = ['friends_count'];
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -71,5 +73,9 @@ class User extends Authenticatable
 
     public function friends(){
         return $this->hasMany(Friend::class,'user_id','id');
+    }
+
+    public function getFriendsCountAttribute(){
+        return $this->friends()->count();
     }
 }

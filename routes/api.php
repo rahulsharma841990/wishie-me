@@ -74,6 +74,7 @@ Route::group(['middleware'=>'cors'], function(){
         //Search User
         Route::get('search/user/{username?}','API\AuthController@searchUser');
 
+
         //Friends
         Route::post('send/friend/request','API\FriendsController@sendFriendRequest');
         Route::post('friend/request','API\FriendsController@acceptRejectFriendRequest');
