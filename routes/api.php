@@ -54,6 +54,7 @@ Route::group(['middleware'=>'cors'], function(){
         Route::put('reminder/{id}','API\RemindersController@updateReminder');
         Route::delete('reminder/{id}','API\RemindersController@deleteReminder');
         Route::get('reminder/{id}/{status}','API\RemindersController@enableDisable');
+        Route::get('reminders/reset','API\RemindersController@resetReminders');
 
 
         //Birthday Reminders

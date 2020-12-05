@@ -62,4 +62,10 @@ class RemindersController extends Controller
         $updatedReminder->update(['is_enable'=>$status]);
         return response()->json(['errors'=>null,'message'=>'Reminder status update successfully!']);
     }
+
+    public function resetReminders(){
+        $user = Auth::user();
+        Reminder::whereNotIn('label_id',[2,3,4])->where('user_id',$user->id)->delete();
+        return response()->json(['errors'=>null,'message'=>'Reminders deleted successfully!']);
+    }
 }
