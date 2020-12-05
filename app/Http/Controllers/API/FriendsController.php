@@ -46,7 +46,13 @@ class FriendsController extends Controller
     public function listOfFriendRequests(){
         $user = Auth::user();
         $sentByMe = Friend::with(['friend'])->where(['user_id'=>$user->id])->whereNull('is_accepted')->get();
+        $sentByMe = $sentByMe->map(function($query){
+            return $query->friend;
+        });
         $sendToMe = Friend::with(['friend'])->where(['friend_id'=>$user->id])->whereNull('is_accepted')->get();
+        $sendToMe = $sendToMe->map(function($query){
+            return $query->friend;
+        });
         return response()->json(['errors'=>null,'message'=>'Friends collected successfully!','send_by_me'=>$sentByMe->toArray(),
             'sent_to_me'=>$sendToMe->toArray()]);
     }
