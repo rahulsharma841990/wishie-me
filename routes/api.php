@@ -83,9 +83,12 @@ Route::group(['middleware'=>'cors'], function(){
 
         //Video Share
         Route::post('upload/video','API\VideoShareController@uploadVideo');
+        Route::post('share/video','API\VideoShareController@shareVideo');
+        Route::get('videos','API\VideoShareController@listOfVideos');
     });
 });
 Route::group(['middleware' => ['web']], function() {
     Route::get('image/{disk}/{image}',['as'=>'public-image','uses'=>'API\ImageController@image']);
     Route::get('tone/{disk}/{file}',['as'=>'public-tone','uses'=>'API\ToneController@tone']);
+    Route::get('video/{disk}/{file}',['as'=>'public-video','uses'=>'API\VideoController@video']);
 });

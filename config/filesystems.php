@@ -60,6 +60,11 @@ return [
             'root' => storage_path('app/profile_images')
         ],
 
+        'video' => [
+            'driver' => 'local',
+            'root' => storage_path('app/videos')
+        ],
+
         'birthday' => [
             'driver' => 'local',
             'root' => storage_path('app/birthday')
