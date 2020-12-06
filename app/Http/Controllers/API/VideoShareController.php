@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\SavedVideosMapping;
 use App\Video;
 use App\VideoSharingMapping;
 use Illuminate\Http\Request;
@@ -50,7 +51,31 @@ class VideoShareController extends Controller
         $listOfVideos = Video::where(['user_id'=>$user->id])->get();
         $draftedVideos = $listOfVideos->where('is_draft',1);
         $publishedVideos = $listOfVideos->where('is_published',1);
+        $savedVideos = SavedVideosMapping::with('video')->where(['user_id'=>$user->id])->get();
+        $savedVideos = $savedVideos->map(function($video){
+            return $video->video;
+        });
         return response(['errors'=>null,'message'=>'Videos collected successfully!','drafted_videos'=>$draftedVideos,
-            'published_videos'=>$publishedVideos]);
+            'published_videos'=>$publishedVideos,'saved_videos'=>$savedVideos]);
+    }
+
+    public function saveVideoToMyVideos(Request $request){
+        if($request->has('video_id') && $request->has('publisher_id')){
+            $user = Auth::user();
+            $savedVideoMapping = SavedVideosMapping::firstOrNew(['video_id'=>$request->video_id,'user_id'=>$user->id,
+                'publisher_id'=>$request->publisher_id]);
+            $savedVideoMapping->video_id = $request->video_id;
+            $savedVideoMapping->publisher_id = $request->publisher_id;
+            $savedVideoMapping->user_id = $user->id;
+            $savedVideoMapping->save();
+            return response()->json(['errors'=>null,'message'=>'Video saved to my profile successfully!']);
+        }else{
+            return response()->json(
+                ['errors'=>[
+                                'video_id'=>['Video id is required'],
+                                'publisher_id' => ['Publisher id is required']
+                            ],
+                'message'=>'Required data is missing']);
+        }
     }
 }
