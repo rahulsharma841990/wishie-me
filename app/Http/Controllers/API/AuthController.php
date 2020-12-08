@@ -224,10 +224,14 @@ class AuthController extends Controller
             ->orWhere('first_name','like','%'.$username.'%')
             ->where('id','!=',$user->id)
             ->get();
-        $users = $users->map(function($item){
-            $item->friends = $item->friends->user;
-        });
-        return response()->json(['errors'=>null,'message'=>'Users collected successfully!','users'=>$users->toArray()]);
+        $usersArray = [];
+        foreach($users->toArray() as $key => $user){
+            foreach($user['friends'] as $k => $friend){
+                $usersArray[$k] = $user;
+                $usersArray[$k]['friends'] = $friend['user'];
+            }
+        }
+        return response()->json(['errors'=>null,'message'=>'Users collected successfully!','users'=>$usersArray]);
     }
 
 }
