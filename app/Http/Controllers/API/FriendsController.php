@@ -63,4 +63,21 @@ class FriendsController extends Controller
         $friendModel->delete();
         return response()->json(['errors'=>null,'message'=>'Friend request canceled successfully!']);
     }
+
+    public function friendsList(){
+        $user = Auth::user();
+        $usersArray = [];
+        $friends = Friend::with(['user'])->where(['user_id'=>$user->id])->get()->toArray();
+        foreach($friends as $key => $user){
+            $usersArray[$key] = $user['user'];
+            if($user['is_accepted'] == 1){
+                $usersArray[$key]['is_my_friend'] = true;
+                $usersArray[$key]['is_friend_request_sent'] = false;
+            }else{
+                $usersArray[$key]['is_my_friend'] = false;
+                $usersArray[$key]['is_friend_request_sent'] = true;
+            }
+        }
+        return response()->json(['errors'=>null,'message'=>'Friends collected successfully!','users'=>$usersArray]);
+    }
 }
