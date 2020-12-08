@@ -217,7 +217,7 @@ class AuthController extends Controller
     }
 
     public function searchUser($username = ''){
-        $user = Auth::user();
+        $userDet = Auth::user();
         $users = User::with(['friends'=>function($query){
             $query->with('user');
         }])->where('username','like','%'.$username.'%')
@@ -226,7 +226,7 @@ class AuthController extends Controller
             ->get();
         $usersArray = [];
         foreach($users->toArray() as $key => $user){
-            if($user['id'] != $user->id){
+            if($user['id'] != $userDet->id){
                 foreach($user['friends'] as $k => $friend){
                     $usersArray[$k] = $user;
                     $usersArray[$k]['friends'] = $friend['user'];
