@@ -226,9 +226,11 @@ class AuthController extends Controller
             ->get();
         $usersArray = [];
         foreach($users->toArray() as $key => $user){
-            foreach($user['friends'] as $k => $friend){
-                $usersArray[$k] = $user;
-                $usersArray[$k]['friends'] = $friend['user'];
+            if($user['id'] != $user->id){
+                foreach($user['friends'] as $k => $friend){
+                    $usersArray[$k] = $user;
+                    $usersArray[$k]['friends'] = $friend['user'];
+                }
             }
         }
         return response()->json(['errors'=>null,'message'=>'Users collected successfully!','users'=>$usersArray]);
