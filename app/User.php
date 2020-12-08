@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
@@ -23,7 +24,7 @@ class User extends Authenticatable
         'header_image'
     ];
 
-    protected $appends = ['friends_count'];
+    protected $appends = ['friends_count','is_my_friend','is_friend_request_sent'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -77,5 +78,20 @@ class User extends Authenticatable
 
     public function getFriendsCountAttribute(){
         return $this->friends()->count();
+    }
+
+    public function friend(){
+        return $this->belongsTo(Friend::class,'id','user_id');
+    }
+
+    public function getIsMyFriendAttribute($value){
+        $isFriend = $this->friend()->where(['friend_id'=>Auth::user()->id,'is_accepted'=>1])->first();
+        return ($isFriend == null)?false:true;
+    }
+
+    public function getIsFriendRequestSentAttribute(){
+        $isFriendRequestSent = $this->friend()->where(['friend_id'=>Auth::user()->id])->whereNull('is_accepted')
+            ->whereNull('is_rejected')->first();
+        return ($isFriendRequestSent == null)?false:true;
     }
 }
