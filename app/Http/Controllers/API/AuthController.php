@@ -9,6 +9,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Label;
 use App\Reminder;
 use App\User;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -217,10 +218,12 @@ class AuthController extends Controller
     }
 
     public function searchUser($username = ''){
+        $user = Auth::use();
         $users = User::with(['friends'=>function($query){
             $query->with('user');
         }])->where('username','like','%'.$username.'%')
             ->orWhere('first_name','like','%'.$username.'%')
+            ->where('id','!=',$user->id)
             ->get()->toArray();
         return response()->json(['errors'=>null,'message'=>'Users collected successfully!','users'=>$users]);
     }

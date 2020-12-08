@@ -50,13 +50,12 @@ class VideoShareController extends Controller
         $user = Auth::user();
         $listOfVideos = Video::where(['user_id'=>$user->id])->get();
         $draftedVideos = $listOfVideos->where('is_draft',1);
-        $publishedVideos = $listOfVideos->where('is_published',1);
         $savedVideos = SavedVideosMapping::with('video')->where(['user_id'=>$user->id])->get();
         $savedVideos = $savedVideos->map(function($video){
             return $video->video;
         });
         return response(['errors'=>null,'message'=>'Videos collected successfully!','drafted_videos'=>$draftedVideos,
-            'published_videos'=>$publishedVideos,'saved_videos'=>$savedVideos]);
+            'saved_videos'=>$savedVideos]);
     }
 
     public function saveVideoToMyVideos(Request $request){
@@ -77,5 +76,12 @@ class VideoShareController extends Controller
                             ],
                 'message'=>'Required data is missing']);
         }
+    }
+
+    public function publishedVideos(Request $request){
+        $publishedVideoArray = [];
+        $user = Auth::user();
+        $myPublishedVideos = Video::where(['user_id'=>$user->id,'is_published'=>1])->get();
+        dd($myPublishedVideos);
     }
 }
