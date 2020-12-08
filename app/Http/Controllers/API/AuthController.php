@@ -222,7 +222,7 @@ class AuthController extends Controller
             $query->with('user');
         }])->where('username','like','%'.$username.'%')
             ->orWhere('first_name','like','%'.$username.'%')
-            ->where('id','!=',$user->id)
+            ->where('id','!=',$userDet->id)
             ->get();
         $usersArray = [];
         foreach($users->toArray() as $key => $user){
