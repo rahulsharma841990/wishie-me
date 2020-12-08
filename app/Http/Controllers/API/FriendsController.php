@@ -64,10 +64,14 @@ class FriendsController extends Controller
         return response()->json(['errors'=>null,'message'=>'Friend request canceled successfully!']);
     }
 
-    public function friendsList(){
-        $user = Auth::user();
+    public function friendsList($userId = null){
+        if($userId == null){
+            $user = Auth::user();
+        }else{
+            $user = User::find($userId);
+        }
         $usersArray = [];
-        $friends = Friend::with(['user'])->where(['user_id'=>$user->id])->get()->toArray();
+        $friends = Friend::with(['user'])->where(['friend_id'=>$user->id])->get()->toArray();
         foreach($friends as $key => $user){
             $usersArray[$key] = $user['user'];
             if($user['is_accepted'] == 1){

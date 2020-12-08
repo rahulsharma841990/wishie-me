@@ -81,7 +81,7 @@ Route::group(['middleware'=>'cors'], function(){
         Route::post('friend/request','API\FriendsController@acceptRejectFriendRequest');
         Route::get('friend/requests','API\FriendsController@listOfFriendRequests');
         Route::post('friend/request/cancel','API\FriendsController@cancelFriendRequest');
-        Route::get('friends','API\FriendsController@friendsList');
+        Route::get('friends/{user_id?}','API\FriendsController@friendsList');
 
         //Video Share
         Route::post('upload/video','API\VideoShareController@uploadVideo');
