@@ -218,22 +218,10 @@ class AuthController extends Controller
 
     public function searchUser($username = ''){
         $userDet = Auth::user();
-        $users = User::with(['friends'=>function($query){
-            $query->with('user');
-        }])->where('username','like','%'.$username.'%')
+        $users = User::where('username','like','%'.$username.'%')
             ->orWhere('first_name','like','%'.$username.'%')
-            ->where('id','!=',$userDet->id)
             ->get();
-        $usersArray = [];
-        foreach($users->toArray() as $key => $user){
-            if($user['id'] != $userDet->id){
-                foreach($user['friends'] as $k => $friend){
-                    $usersArray[$k] = $user;
-                    $usersArray[$k]['friends'] = $friend['user'];
-                }
-            }
-        }
-        return response()->json(['errors'=>null,'message'=>'Users collected successfully!','users'=>$usersArray]);
+        return response()->json(['errors'=>null,'message'=>'Users collected successfully!','users'=>$users->where('id','!=',$userDet->id)->values()->toArray()]);
     }
 
 }
