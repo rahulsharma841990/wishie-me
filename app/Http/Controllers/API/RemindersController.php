@@ -66,8 +66,19 @@ class RemindersController extends Controller
     public function resetReminders(){
         $user = Auth::user();
         $labels = Label::whereCreatedBy($user->id)->pluck('id');
-        Reminder::whereNotIn('label_id',$labels->merge([2,3,4])->toArray())->where('user_id',$user->id)->delete();
-        Reminder::where(['user_id'=>$user->id])->update(['title'=>'Day of Occasion','time'=>'10:00 AM']);
+        Reminder::whereNotIn('label_id',[2,3,4])->where('user_id',$user->id)->delete();
+        foreach($labels as $key => $label){
+            if(!in_array($label,[2,3,4])){
+                $reminderModel = new Reminder;
+                $reminderModel->label_id = $label;
+                $reminderModel->title = 'Day of Occasion';
+                $reminderModel->time = '10:00 AM';
+                $reminderModel->user_id = $user->id;
+                $reminderModel->is_manual = 0;
+                $reminderModel->tone = 'happy_birthday.mpeg';
+                $reminderModel->save();
+            }
+        }
         return response()->json(['errors'=>null,'message'=>'Reminders deleted successfully!']);
     }
 }
