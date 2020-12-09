@@ -85,13 +85,17 @@ class User extends Authenticatable
     }
 
     public function getIsMyFriendAttribute($value){
-        $isFriend = $this->friend()->where(['friend_id'=>Auth::user()->id,'is_accepted'=>1])->first();
-        return ($isFriend == null)?false:true;
+        if(Auth::check()){
+            $isFriend = $this->friend()->where(['friend_id'=>Auth::user()->id,'is_accepted'=>1])->first();
+            return ($isFriend == null)?false:true;
+        }
     }
 
     public function getIsFriendRequestSentAttribute(){
-        $isFriendRequestSent = $this->friend()->where(['friend_id'=>Auth::user()->id])->whereNull('is_accepted')
-            ->whereNull('is_rejected')->first();
-        return ($isFriendRequestSent == null)?false:true;
+        if(Auth::check()) {
+            $isFriendRequestSent = $this->friend()->where(['friend_id' => Auth::user()->id])->whereNull('is_accepted')
+                ->whereNull('is_rejected')->first();
+            return ($isFriendRequestSent == null) ? false : true;
+        }
     }
 }

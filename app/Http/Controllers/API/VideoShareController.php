@@ -14,7 +14,14 @@ use Illuminate\Support\Str;
 class VideoShareController extends Controller
 {
     public function uploadVideo(Request $request){
-        if($request->has('video')){
+        if($request->has('video') && $request->has('thumbnail')){
+            $image = $request->thumbnail;
+            preg_match("/data:image\/(.*?);/",$image,$image_extension);
+            $image = preg_replace('/data:image\/(.*?);base64,/','',$image);
+            $image = str_replace(' ', '+', $image);
+            $imageName = 'image_' . time() . '.' . $image_extension[1];
+            Storage::disk('thumbs')->put($imageName,base64_decode($image));
+
             $videoExt = $request->file('video')->getClientOriginalExtension();
             $videoName = Str::random(20).'.'.$videoExt;
             Storage::disk('video')->put($videoName,\File::get($request->file('video')));
@@ -23,6 +30,7 @@ class VideoShareController extends Controller
             $videoModel->user_id = Auth::user()->id;
             $videoModel->is_draft = 1;
             $videoModel->save();
+
             return response(['errors'=>null,'message'=>'Video uploaded successfully!','video'=>$videoName,'video_id'=>$videoModel->id]);
         }else{
             return response(['errors'=>['video'=>['Please upload the video']],'message'=>'Please upload the video'],422);

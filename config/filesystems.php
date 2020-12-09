@@ -64,6 +64,10 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/videos')
         ],
+        'thumbs' => [
+            'driver' => 'local',
+            'root' => storage_path('app/thumbs')
+        ],
 
         'birthday' => [
             'driver' => 'local',
