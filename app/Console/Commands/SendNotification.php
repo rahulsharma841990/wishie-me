@@ -210,6 +210,7 @@ class SendNotification extends Command
             $insertArray[] = [
                 'to_user_id' => $notification['user_id'],
                 'notification'=>$notification['name'].' birthday. Wish them Happy birthday.',
+                'notify_date'=> date('Y-m-d'),
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ];
