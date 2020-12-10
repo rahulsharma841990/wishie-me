@@ -12,7 +12,7 @@ class Friend extends Model
 {
     protected $fillable = ['user_id','friend_id','is_accepted','is_rejected'];
 
-    public static function sendNotification($user, $fromUser, $message){
+    public static function sendNotification($fromUser, $user, $message){
         $optionBuilder = new OptionsBuilder();
         $optionBuilder->setTimeToLive(60*20);
         $notificationBuilder = new PayloadNotificationBuilder('New Friend Request');
@@ -26,7 +26,7 @@ class Friend extends Model
         $data = $dataBuilder->build();
         $token = $user->device_token;
         $notificationLog = new NotificationLog;
-        $notificationLog->to_user_id = $user->id;
+        $notificationLog->to_user_id = $fromUser->id;
         $notificationLog->notification = $message;
         $notificationLog->save();
         if($token != null){
