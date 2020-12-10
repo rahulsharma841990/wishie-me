@@ -34,7 +34,7 @@ class FriendsController extends Controller
             $saveToMyFriend->save();
             $friendModel->save();
             $fromUser = User::find($request->from_user);
-            $message = $fromUser->first_name.' '.$fromUser->last_name.' accepted your friend request';
+            $message = $toUser->first_name.' '.$toUser->last_name.' accepted your friend request';
             Friend::sendNotification($fromUser,$toUser,$message);
             return response()->json(['errors'=>null,'message'=>'Friend request accepted successfully!']);
         }else{
