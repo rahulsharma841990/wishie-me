@@ -79,16 +79,16 @@ class BirthdayController extends Controller
 
     /** @noinspection PhpUnreachableStatementInspection */
     public function getBirthdays(){
+        $user = Auth::user()->with(['myFriends']);
+        dd($user->get());
         $birthdays = [];
         $birthdayRecords = Birthday::with(['labels'])
             ->whereCreatedBy(Auth::user()->id)
             ->orderBy(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'))
             ->get();
+        dd($birthdayRecords->toArray());
         $birthdays['Recent'] = $this->getRecentBirthdays($birthdayRecords);
-//        $birthdayRecords = $birthdayRecords->filter(function($birthday) use ($birthdays){
-//            $recentIds = collect($birthdays['Recent'])->groupBy('id')->keys()->toArray();
-//            return !in_array($birthday->id,$recentIds);
-//        });
+
         $birthdays['birthdays'] = $this->sortBirthdays($birthdayRecords->values()->toArray());
         return response()->json($birthdays);
 

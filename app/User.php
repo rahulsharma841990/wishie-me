@@ -77,11 +77,15 @@ class User extends Authenticatable
     }
 
     public function getFriendsCountAttribute(){
-        return $this->friends()->count();
+        return $this->friends()->where(['is_accepted'=>1])->count();
     }
 
     public function friend(){
         return $this->belongsTo(Friend::class,'id','user_id');
+    }
+
+    public function myFriends(){
+        return $this->hasMany(Friend::class,'user_id','id')->where(['is_accepted'=>1]);
     }
 
     public function getIsMyFriendAttribute($value){
