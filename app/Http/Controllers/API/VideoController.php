@@ -12,4 +12,8 @@ class VideoController extends Controller
         return Storage::disk($disk)->response($file);
     }
 
+    public function thumb($disk,$file){
+        return Storage::disk($disk)->response($file);
+    }
+
 }

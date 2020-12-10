@@ -13,7 +13,9 @@ class AlterVideosTableAddThumbnailColumn extends Migration
      */
     public function up()
     {
-        //
+        Schema::table('videos', function(Blueprint $table){
+            $table->string('video_thumbnail')->after('video');
+        });
     }
 
     /**
@@ -23,6 +25,8 @@ class AlterVideosTableAddThumbnailColumn extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('videos', function(Blueprint $table){
+            $table->dropColumn('video_thumbnail');
+        });
     }
 }

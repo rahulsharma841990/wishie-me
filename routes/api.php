@@ -95,4 +95,5 @@ Route::group(['middleware' => ['web']], function() {
     Route::get('image/{disk}/{image}',['as'=>'public-image','uses'=>'API\ImageController@image']);
     Route::get('tone/{disk}/{file}',['as'=>'public-tone','uses'=>'API\ToneController@tone']);
     Route::get('video/{disk}/{file}',['as'=>'public-video','uses'=>'API\VideoController@video']);
+    Route::get('thumb/{disk}/{file}',['as'=>'video-thumb','uses'=>'API\VideoController@thumb']);
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Birthday;
+use App\User;
 use App\BirthdayReminder;
 use App\Http\Requests\BirthdayRequest;
 use App\Http\Controllers\Controller;
@@ -79,8 +80,14 @@ class BirthdayController extends Controller
 
     /** @noinspection PhpUnreachableStatementInspection */
     public function getBirthdays(){
-        $user = Auth::user()->with(['myFriends']);
-        dd($user->get());
+        $authUser = Auth::user();
+        $userDetails = User::with(['myFriends'=>function($query){
+            return $query->with('friend');
+        }])->find($authUser->id);
+        $friendsUser = $userDetails->myFriends->map(function($friend){
+            return $friend->friend;
+        });
+//        dd($friendsUser->toArray());
         $birthdays = [];
         $birthdayRecords = Birthday::with(['labels'])
             ->whereCreatedBy(Auth::user()->id)

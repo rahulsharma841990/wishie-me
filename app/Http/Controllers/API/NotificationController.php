@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\NotificationRequest;
 use App\Http\Requests\ReadNotificationRequest;
 use App\NotificationLog;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use LaravelFCM\Message\OptionsBuilder;
 use LaravelFCM\Message\PayloadDataBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
@@ -41,8 +43,11 @@ class NotificationController extends Controller
 
     public function getNotifications(){
         $user = Auth::user();
-        $notificationModel = NotificationLog::where(['to_user_id'=>$user->id])->get();
-        return response()->json(['errors'=>null,'notifications'=>$notificationModel,'message'=>'Notifications collected successfully!']);
+        $notificationModel = NotificationLog::where(['to_user_id'=>$user->id])
+            ->where(DB::raw('date(notify_date)'),'>',Carbon::now()->subDays(7)->format('Y-m-d'))
+            ->get();
+        return response()->json(['errors'=>null,'notifications'=>$notificationModel->groupBy('notify_date'),
+            'message'=>'Notifications collected successfully!']);
     }
 
     public function setRead(ReadNotificationRequest $request){

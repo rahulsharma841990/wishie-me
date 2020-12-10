@@ -3,4 +3,7 @@
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="ES6" />
   </component>
+  <component name="ProjectPlainTextFileTypeManager">
+    <file url="file://$PROJECT_DIR$/database/migrations/2020_12_11_050301_alter_videos_table_add_column_thumbnail.php" />
+  </component>
 </project>
