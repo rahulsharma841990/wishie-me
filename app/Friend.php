@@ -24,7 +24,7 @@ class Friend extends Model
         $option = $optionBuilder->build();
         $notification = $notificationBuilder->build();
         $data = $dataBuilder->build();
-        $token = $user->device_token;
+        $token = $fromUser->device_token;
         $notificationLog = new NotificationLog;
         $notificationLog->to_user_id = $fromUser->id;
         $notificationLog->notification = $message;
