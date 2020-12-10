@@ -20,7 +20,7 @@ class Friend extends Model
             ->setSound('default')->setClickAction('FCM_PLUGIN_ACTIVITY');
 
         $dataBuilder = new PayloadDataBuilder();
-        $dataBuilder->addData(['from_user' => $fromUser]);
+        $dataBuilder->addData(['from_user' => json_encode($fromUser)]);
         $option = $optionBuilder->build();
         $notification = $notificationBuilder->build();
         $data = $dataBuilder->build();
@@ -28,6 +28,7 @@ class Friend extends Model
         $notificationLog = new NotificationLog;
         $notificationLog->to_user_id = $fromUser->id;
         $notificationLog->notification = $message;
+        $notificationLog->notify_date = date('Y-m-d H:i:s');
         $notificationLog->save();
         if($token != null){
             $downstreamResponse = FCM::sendTo($token, $option, $notification, $data);

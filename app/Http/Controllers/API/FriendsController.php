@@ -23,12 +23,12 @@ class FriendsController extends Controller
     }
 
     public function acceptRejectFriendRequest(Request $request){
-        $toUser = Auth::user()->id;
-        $friendModel = Friend::where(['friend_id'=>$toUser,'user_id'=>$request->from_user])->first();
+        $toUser = Auth::user();
+        $friendModel = Friend::where(['friend_id'=>$toUser->id,'user_id'=>$request->from_user])->first();
         if($request->accept_reject == 1){
             $friendModel->is_accepted = 1;
             $saveToMyFriend = new Friend;
-            $saveToMyFriend->user_id = $toUser;
+            $saveToMyFriend->user_id = $toUser->id;
             $saveToMyFriend->friend_id = $request->from_user;
             $saveToMyFriend->is_accepted = 1;
             $saveToMyFriend->save();
