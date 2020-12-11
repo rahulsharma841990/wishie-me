@@ -107,7 +107,6 @@ class VideoShareController extends Controller
         foreach($friendsVideos as $k => $video){
             $publishedVideoArray[] = $video->toArray();
         }
-        dd($publishedVideoArray);
         return response()->json(['errors'=>null,'message'=>'Feeds collected successfully!','feeds'=>$publishedVideoArray]);
 
     }
