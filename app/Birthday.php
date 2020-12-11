@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\Storage;
 
 class Birthday extends Model
 {
-    protected $fillable = ['image','first_name','last_name','birthday','email','mobile','note','created_by'];
+    protected $fillable = ['image','first_name','last_name','birthday','email','mobile','note','created_by','friend_id'];
 
-    protected $appends = ['birth_date','days_left_or_before','turned_age'];
+    protected $appends = ['birth_date','days_left_or_before','turned_age','is_my_friend'];
 
     public function getImageAttribute($value){
         if($value != null){
@@ -133,4 +133,19 @@ class Birthday extends Model
     public function user(){
         return $this->belongsTo(User::class, 'created_by','id');
     }
+
+    public function friend(){
+        return $this->belongsTo(User::class,'friend_id','id');
+    }
+
+
+    public function getIsMyFriendAttribute(){
+        $isFriend = $this->friend()->first();
+        if($isFriend == null){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
 }

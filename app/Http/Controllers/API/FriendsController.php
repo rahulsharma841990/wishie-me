@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Birthday;
 use App\Friend;
 use App\Http\Controllers\Controller;
+use App\LabelMapping;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -36,6 +39,29 @@ class FriendsController extends Controller
             $fromUser = User::find($request->from_user);
             $message = $toUser->first_name.' '.$toUser->last_name.' accepted your friend request';
             Friend::sendNotification($fromUser,$toUser,$message);
+            $birthdayModel = new Birthday;
+            $birthdayModel->first_name = $toUser->first_name;
+            $birthdayModel->last_name = $toUser->last_name;
+            $birthdayModel->birthday = Carbon::parse($toUser->dob)->format('Y-m-d');
+            $birthdayModel->created_by = $request->from_user;
+            $birthdayModel->save();
+            $labelMapping = new LabelMapping;
+            $labelMapping->birthday_id = $birthdayModel->id;
+            $labelMapping->label_id = 3;
+            $labelMapping->user_id = $request->from_user;
+            $labelMapping->save();
+
+            $birthdayModel = new Birthday;
+            $birthdayModel->first_name = $fromUser->first_name;
+            $birthdayModel->last_name = $fromUser->last_name;
+            $birthdayModel->birthday = Carbon::parse($fromUser->dob)->format('Y-m-d');
+            $birthdayModel->created_by = $toUser->id;
+            $birthdayModel->save();
+            $labelMapping = new LabelMapping;
+            $labelMapping->birthday_id = $birthdayModel->id;
+            $labelMapping->label_id = 3;
+            $labelMapping->user_id = $toUser->id;
+            $labelMapping->save();
             return response()->json(['errors'=>null,'message'=>'Friend request accepted successfully!']);
         }else{
             $friendModel->is_rejected = 1;

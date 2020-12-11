@@ -44,9 +44,10 @@ class NotificationController extends Controller
     public function getNotifications(){
         $user = Auth::user();
         $notificationModel = NotificationLog::where(['to_user_id'=>$user->id])
+            ->select(['id','to_user_id','notification','notify_date','is_read','created_at','updated_at',DB::raw('date(notify_date) as date')])
             ->where(DB::raw('date(notify_date)'),'>',Carbon::now()->subDays(7)->format('Y-m-d'))
             ->get();
-        return response()->json(['errors'=>null,'notifications'=>$notificationModel->groupBy('notify_date'),
+        return response()->json(['errors'=>null,'notifications'=>$notificationModel->groupBy('date'),
             'message'=>'Notifications collected successfully!']);
     }
 

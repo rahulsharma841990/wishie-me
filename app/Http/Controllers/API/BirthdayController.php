@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Birthday;
-use App\User;
 use App\BirthdayReminder;
 use App\Http\Requests\BirthdayRequest;
 use App\Http\Controllers\Controller;
@@ -80,23 +79,15 @@ class BirthdayController extends Controller
 
     /** @noinspection PhpUnreachableStatementInspection */
     public function getBirthdays(){
-        $authUser = Auth::user();
-        $userDetails = User::with(['myFriends'=>function($query){
-            return $query->with('friend');
-        }])->find($authUser->id);
-        $friendsUser = $userDetails->myFriends->map(function($friend){
-            return $friend->friend;
-        });
-//        dd($friendsUser->toArray());
         $birthdays = [];
-        $birthdayRecords = Birthday::with(['labels'])
+        $birthdayRecords = Birthday::with(['labels','friend'])
             ->whereCreatedBy(Auth::user()->id)
             ->orderBy(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'))
             ->get();
-        dd($birthdayRecords->toArray());
-        $birthdays['Recent'] = $this->getRecentBirthdays($birthdayRecords);
 
+        $birthdays['Recent'] = $this->getRecentBirthdays($birthdayRecords);
         $birthdays['birthdays'] = $this->sortBirthdays($birthdayRecords->values()->toArray());
+
         return response()->json($birthdays);
 
         $birthdays['Today'] = Birthday::with(['labels'])
