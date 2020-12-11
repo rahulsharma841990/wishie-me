@@ -84,7 +84,6 @@ class BirthdayController extends Controller
             ->whereCreatedBy(Auth::user()->id)
             ->orderBy(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'))
             ->get();
-
         $birthdays['Recent'] = $this->getRecentBirthdays($birthdayRecords);
         $birthdays['birthdays'] = $this->sortBirthdays($birthdayRecords->values()->toArray());
 

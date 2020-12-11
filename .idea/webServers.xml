@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="b917bdaf-b3d9-4450-97d1-b33afbc8e85b" name="Webtechql" url="http://webtechql.com">
+        <fileTransfer host="webtechql.com" port="22" rootFolder="/home/rahulasr/" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+      <webServer id="72b199d1-278c-4b0b-9688-1426cd085683" name="webcooks" url="http://webcooks.in">
+        <fileTransfer host="webcooks.in" port="22" rootFolder="/home/sboy8c4wy24p/" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

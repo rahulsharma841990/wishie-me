@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Friend;
 use App\Http\Controllers\Controller;
 use App\SavedVideosMapping;
 use App\Video;
@@ -92,6 +93,16 @@ class VideoShareController extends Controller
         $publishedVideoArray = [];
         $user = Auth::user();
         $myPublishedVideos = Video::where(['user_id'=>$user->id,'is_published'=>1])->get();
-        dd($myPublishedVideos);
+        $myFriends = Friend::with(['friend'])->whereUserId($user->id)->get();
+        $myFriends = $myFriends->map(function($query){
+            return $query->friend;
+        });
+        $publishedVideoArray = $myPublishedVideos->toArray();
+        $friendsVideos = Video::whereIn('user_id',$myFriends->pluck('id'))->where(['is_published'=>1])->get();
+        foreach($friendsVideos as $k => $video){
+            $publishedVideoArray[] = $video->toArray();
+        }
+        return response()->json(['errors'=>null,'message'=>'Feeds collected successfully!','feeds'=>$publishedVideoArray]);
+
     }
 }
