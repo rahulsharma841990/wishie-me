@@ -51,10 +51,15 @@ class VideoShareController extends Controller
             $sharingModel->video_id = $request->video_id;
             $sharingModel->share_with = $request->share_with;
             $sharingModel->save();
+            $this->publishVideo($request->video_id,$user->id);
             return response(['errors'=>null,'message'=>'Video shared successfully!']);
         }else{
             return response(['errors'=>['video'=>['Video already shared with same user!']],'message'=>'Video shared successfully!']);
         }
+    }
+
+    protected function publishVideo($video_id,$user_id){
+        Video::where(['id'=>$video_id,'user_id'=>$user_id])->update(['is_draft'=>null,'is_published'=>1]);
     }
 
     public function listOfVideos(){
@@ -102,6 +107,7 @@ class VideoShareController extends Controller
         foreach($friendsVideos as $k => $video){
             $publishedVideoArray[] = $video->toArray();
         }
+        dd($publishedVideoArray);
         return response()->json(['errors'=>null,'message'=>'Feeds collected successfully!','feeds'=>$publishedVideoArray]);
 
     }
