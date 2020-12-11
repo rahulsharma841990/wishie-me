@@ -89,6 +89,7 @@ class BirthdayController extends Controller
 
         return response()->json($birthdays);
 
+        //Code not using //done in mobile application
         $birthdays['Today'] = Birthday::with(['labels'])
             ->where(DB::raw('DATE_FORMAT(birthday,\'%m-%d\')'),'=',Carbon::today()->format('m-d'))
             ->whereCreatedBy(Auth::user()->id)

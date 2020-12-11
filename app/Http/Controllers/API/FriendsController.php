@@ -42,6 +42,7 @@ class FriendsController extends Controller
             $birthdayModel = new Birthday;
             $birthdayModel->first_name = $toUser->first_name;
             $birthdayModel->last_name = $toUser->last_name;
+            $birthdayModel->friend_id = $toUser->id;
             $birthdayModel->birthday = Carbon::parse($toUser->dob)->format('Y-m-d');
             $birthdayModel->created_by = $request->from_user;
             $birthdayModel->save();
@@ -54,6 +55,7 @@ class FriendsController extends Controller
             $birthdayModel = new Birthday;
             $birthdayModel->first_name = $fromUser->first_name;
             $birthdayModel->last_name = $fromUser->last_name;
+            $birthdayModel->friend_id = $fromUser->id;
             $birthdayModel->birthday = Carbon::parse($fromUser->dob)->format('Y-m-d');
             $birthdayModel->created_by = $toUser->id;
             $birthdayModel->save();
