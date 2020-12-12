@@ -88,7 +88,7 @@ class FriendsController extends Controller
 
     public function cancelFriendRequest(Request $request){
         $user = Auth::user();
-        $friendModel = Friend::where(['id'=>$request->request_id,'user_id'=>$user->id])->first();
+        $friendModel = Friend::where(['friend_id'=>$request->request_id,'user_id'=>$user->id])->first();
         if($friendModel != null) {
             $friendModel->delete();
         }
