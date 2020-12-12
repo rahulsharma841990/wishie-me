@@ -20,7 +20,7 @@ class FriendsController extends Controller
         $friendModel->friend_id = $request->to_user;
         $friendModel->save();
         $toUser = User::find($request->to_user);
-        $message = $toUser->first_name.' '.$toUser->last_name.' sent you a friend request';
+        $message = $fromUser->first_name.' '.$fromUser->last_name.' sent you a friend request';
         Friend::sendNotification($toUser,$fromUser,$message);
         return response()->json(['errors'=>null,'message'=>'Friend request sent successfully!']);
     }
@@ -67,6 +67,7 @@ class FriendsController extends Controller
             return response()->json(['errors'=>null,'message'=>'Friend request accepted successfully!']);
         }else{
             $friendModel->is_rejected = 1;
+            $friendModel->save();
             return response()->json(['errors'=>null,'message'=>'Friend request rejected!']);
         }
     }
