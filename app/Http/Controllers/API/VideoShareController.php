@@ -65,7 +65,7 @@ class VideoShareController extends Controller
     public function listOfVideos(){
         $user = Auth::user();
         $listOfVideos = Video::where(['user_id'=>$user->id])->get();
-        $draftedVideos = $listOfVideos->where('is_draft',1);
+        $draftedVideos = $listOfVideos->where('is_draft',1)->values();
         $savedVideos = SavedVideosMapping::with('video')->where(['user_id'=>$user->id])->get();
         $savedVideos = $savedVideos->map(function($video){
             return $video->video;

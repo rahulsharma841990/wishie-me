@@ -38,7 +38,6 @@ class FriendsController extends Controller
             $friendModel->save();
             $fromUser = User::find($request->from_user);
             $message = $toUser->first_name.' '.$toUser->last_name.' accepted your friend request';
-            Friend::sendNotification($fromUser,$toUser,$message);
             $birthdayModel = new Birthday;
             $birthdayModel->first_name = $toUser->first_name;
             $birthdayModel->last_name = $toUser->last_name;
@@ -64,6 +63,7 @@ class FriendsController extends Controller
             $labelMapping->label_id = 3;
             $labelMapping->user_id = $toUser->id;
             $labelMapping->save();
+            Friend::sendNotification($fromUser,$toUser,$message);
             return response()->json(['errors'=>null,'message'=>'Friend request accepted successfully!']);
         }else{
             $friendModel->is_rejected = 1;
