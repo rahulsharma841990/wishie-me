@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Video extends Model
 {
-    protected $fillable = ['video','user_id','is_draft','is_published','video_thumbnail'];
+    protected $fillable = ['video','user_id','is_draft','is_published','video_thumbnail','type_of_wishie'];
 
     public function getVideoAttribute($value){
         if($value != null){

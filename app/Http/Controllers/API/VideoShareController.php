@@ -15,7 +15,7 @@ use Illuminate\Support\Str;
 class VideoShareController extends Controller
 {
     public function uploadVideo(Request $request){
-        if($request->has('video') && $request->has('thumbnail')){
+        if($request->has('video') && $request->has('thumbnail') && $request->has('type_of_wishie')){
 
             $image = $request->thumbnail;
             preg_match("/data:image\/(.*?);/",$image,$image_extension);
@@ -32,6 +32,7 @@ class VideoShareController extends Controller
             $videoModel->user_id = Auth::user()->id;
             $videoModel->video_thumbnail = $imageName;
             $videoModel->is_draft = 1;
+            $videoModel->type_of_wishie = $request->type_of_wishie;
             $videoModel->save();
 
             return response(['errors'=>null,'message'=>'Video uploaded successfully!','video'=>$videoName,'video_id'=>$videoModel->id]);

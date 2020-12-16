@@ -89,6 +89,13 @@ Route::group(['middleware'=>'cors'], function(){
         Route::get('videos','API\VideoShareController@listOfVideos');
         Route::post('save/video','API\VideoShareController@saveVideoToMyVideos');
         Route::get('published/videos','API\VideoShareController@publishedVideos');
+
+        //Comments
+        Route::post('comment','API\CommentsController@postComment');
+        Route::get('comments/{video_id}','API\CommentsController@videoComments');
+
+        //Like Video
+        Route::post('like','API\VideoLikesController@likeVideo');
     });
 });
 Route::group(['middleware' => ['web']], function() {
