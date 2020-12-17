@@ -96,6 +96,7 @@ class VideoShareController extends Controller
     }
 
     public function publishedVideos(Request $request){
+        dd('here');
         $publishedVideoArray = [];
         $user = Auth::user();
         $myPublishedVideos = Video::where(['user_id'=>$user->id,'is_published'=>1])->get();
@@ -103,6 +104,7 @@ class VideoShareController extends Controller
         $myFriends = $myFriends->map(function($query){
             return $query->friend;
         });
+        dd($myPublishedVideos->toArray());
         $publishedVideoArray = $myPublishedVideos->toArray();
         $friendsVideos = Video::whereIn('user_id',$myFriends->pluck('id'))->where(['is_published'=>1])->get();
         foreach($friendsVideos as $k => $video){

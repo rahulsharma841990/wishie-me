@@ -10,6 +10,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class FriendsController extends Controller
 {
@@ -38,7 +39,14 @@ class FriendsController extends Controller
             $friendModel->save();
             $fromUser = User::find($request->from_user);
             $message = $toUser->first_name.' '.$toUser->last_name.' accepted your friend request';
+            $userImageName = null;
+            if($toUser->profile_image != null){
+                $userImageName = $toUser->profile_image;
+                Storage::disk('birthday')->put($userImageName, Storage::disk('profile_images')
+                    ->get($userImageName));
+            }
             $birthdayModel = new Birthday;
+            $birthdayModel->image = $userImageName;
             $birthdayModel->first_name = $toUser->first_name;
             $birthdayModel->last_name = $toUser->last_name;
             $birthdayModel->friend_id = $toUser->id;
@@ -51,7 +59,15 @@ class FriendsController extends Controller
             $labelMapping->user_id = $request->from_user;
             $labelMapping->save();
 
+            $userImageName = null;
+            if($fromUser->profile_image != null){
+                $userImageName = $fromUser->profile_image;
+                Storage::disk('birthday')->put($userImageName, Storage::disk('profile_images')
+                    ->get($userImageName));
+            }
+
             $birthdayModel = new Birthday;
+            $birthdayModel->image = $userImageName;
             $birthdayModel->first_name = $fromUser->first_name;
             $birthdayModel->last_name = $fromUser->last_name;
             $birthdayModel->friend_id = $fromUser->id;

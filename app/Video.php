@@ -23,4 +23,8 @@ class Video extends Model
             return null;
         }
     }
+
+    public function videoShare(){
+        return;
+    }
 }
