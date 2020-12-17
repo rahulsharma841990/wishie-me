@@ -25,6 +25,10 @@ class Video extends Model
     }
 
     public function videoShare(){
-        return;
+        return $this->belongsTo(VideoSharingMapping::class,'id','video_id');
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class,'user_id','id');
     }
 }
