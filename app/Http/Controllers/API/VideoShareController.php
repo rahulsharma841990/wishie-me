@@ -98,7 +98,7 @@ class VideoShareController extends Controller
     public function publishedVideos(Request $request){
         $publishedVideoArray = [];
         $user = Auth::user();
-        $myPublishedVideos = Video::with(['videoShare.shareWith','user'])->where(['user_id'=>$user->id,'is_published'=>1])->get();
+        $myPublishedVideos = Video::with(['videoShare.shareWith','user','comments','didILike'])->where(['user_id'=>$user->id,'is_published'=>1])->get();
         $myFriends = Friend::with(['friend'])->whereUserId($user->id)->get();
         $myFriends = $myFriends->map(function($query){
             return $query->friend;
@@ -106,7 +106,9 @@ class VideoShareController extends Controller
         $myPublishedVideos = $myPublishedVideos->map(function($item){
             $item['shared_with'] = $item->videoShare->shareWith->toArray();
             $item['who_shared'] = $item->user->toArray();
+            $item['did_i_like'] = ($item->didILike != null)?true:false;
             unset($item['videoShare']);
+            unset($item['didILike']);
             unset($item['user']);
             return $item;
         });
@@ -116,6 +118,5 @@ class VideoShareController extends Controller
             $publishedVideoArray[] = $video->toArray();
         }
         return response()->json(['errors'=>null,'message'=>'Feeds collected successfully!','feeds'=>$publishedVideoArray]);
-
     }
 }

@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Video extends Model
 {
@@ -31,4 +32,14 @@ class Video extends Model
     public function user(){
         return $this->belongsTo(User::class,'user_id','id');
     }
+
+    public function comments(){
+        return $this->hasMany(Comment::class,'video_id','id');
+    }
+
+    public function didILike(){
+        return $this->belongsTo(VideoLike::class,'id','video_id')
+            ->where('user_id',Auth::user()->id);
+    }
+
 }
