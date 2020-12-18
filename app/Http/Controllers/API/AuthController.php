@@ -171,8 +171,16 @@ class AuthController extends Controller
     }
 
     public function getUserProfile(){
-        $userDetails = Auth::with(['videoShared'])->user();
-        return response()->json(['errors'=>null,'user_details'=>$userDetails->toArray()]);
+        $userDetails = Auth::user();
+        $user = User::with(['videoShared.video'])->find($userDetails->id);
+        $userArray = $user->toArray();
+        $user->videoShared->map(function($item) use (&$userArray){
+            $userArray['shared_videos'][] = $item['video']->toArray();
+            unset($userArray['video_shared']);
+            unset($userArray['video']);
+            return $item;
+        });
+        return response()->json(['errors'=>null,'user_details'=>$userArray]);
     }
 
     public function updateProfile(ProfileUpdateRequest $request){
