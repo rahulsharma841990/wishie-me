@@ -172,7 +172,6 @@ class AuthController extends Controller
 
     public function getUserProfile(){
         $userDetails = Auth::with(['videoShared'])->user();
-//        dd($userDetails);
         return response()->json(['errors'=>null,'user_details'=>$userDetails->toArray()]);
     }
 
