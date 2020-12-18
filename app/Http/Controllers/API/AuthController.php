@@ -175,10 +175,12 @@ class AuthController extends Controller
         $user = User::with(['videoShared.video'])->find($userDetails->id);
         $userArray = $user->toArray();
         $user->videoShared->map(function($item) use (&$userArray){
-            $userArray['shared_videos'][] = $item['video']->toArray();
-            unset($userArray['video_shared']);
-            unset($userArray['video']);
-            return $item;
+            if($item['video'] != null){
+                $userArray['shared_videos'][] = $item['video']->toArray();
+                unset($userArray['video_shared']);
+                unset($userArray['video']);
+                return $item;
+            }
         });
         return response()->json(['errors'=>null,'user_details'=>$userArray]);
     }
