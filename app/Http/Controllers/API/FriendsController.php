@@ -42,8 +42,12 @@ class FriendsController extends Controller
             $userImageName = null;
             if($toUser->profile_image != null){
                 $userImageName = $toUser->profile_image;
-                Storage::disk('birthday')->put($userImageName, Storage::disk('profile_images')
-                    ->get($userImageName));
+                try{
+                    Storage::disk('birthday')->put($userImageName, Storage::disk('profile_images')
+                        ->get($userImageName));
+                }catch (\Exception $e){
+
+                }
             }
             $birthdayModel = new Birthday;
             $birthdayModel->image = $userImageName;
@@ -62,8 +66,12 @@ class FriendsController extends Controller
             $userImageName = null;
             if($fromUser->profile_image != null){
                 $userImageName = $fromUser->profile_image;
-                Storage::disk('birthday')->put($userImageName, Storage::disk('profile_images')
-                    ->get($userImageName));
+                try{
+                    Storage::disk('birthday')->put($userImageName, Storage::disk('profile_images')
+                        ->get($userImageName));
+                }catch(\Exception $e){
+
+                }
             }
 
             $birthdayModel = new Birthday;
