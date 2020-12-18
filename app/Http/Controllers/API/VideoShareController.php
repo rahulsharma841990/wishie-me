@@ -104,7 +104,11 @@ class VideoShareController extends Controller
             return $query->friend;
         });
         $myPublishedVideos = $myPublishedVideos->map(function($item){
-            $item['shared_with'] = $item->videoShare->shareWith->toArray();
+            if($item->videoShare != null){
+                $item['shared_with'] = $item->videoShare->shareWith->toArray();
+            }else{
+                $item['shared_with'] = null;
+            }
             $item['who_shared'] = $item->user->toArray();
             $item['did_i_like'] = ($item->didILike != null)?true:false;
             unset($item['videoShare']);
@@ -113,7 +117,21 @@ class VideoShareController extends Controller
             return $item;
         });
         $publishedVideoArray = $myPublishedVideos->toArray();
-        $friendsVideos = Video::whereIn('user_id',$myFriends->pluck('id'))->where(['is_published'=>1])->get();
+        $friendsVideos = Video::with(['videoShare.shareWith','user','comments','didILike'])
+            ->whereIn('user_id',$myFriends->pluck('id'))->where(['is_published'=>1])->get();
+        $friendsVideos = $friendsVideos->map(function($item){
+            if($item->videoShare != null){
+                $item['shared_with'] = $item->videoShare->shareWith->toArray();
+            }else{
+                $item['shared_with'] = null;
+            }
+            $item['who_shared'] = $item->user->toArray();
+            $item['did_i_like'] = ($item->didILike != null)?true:false;
+            unset($item['videoShare']);
+            unset($item['didILike']);
+            unset($item['user']);
+            return $item;
+        });
         foreach($friendsVideos as $k => $video){
             $publishedVideoArray[] = $video->toArray();
         }
