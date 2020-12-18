@@ -97,9 +97,14 @@ class User extends Authenticatable
 
     public function getIsFriendRequestSentAttribute(){
         if(Auth::check()) {
-            $isFriendRequestSent = $this->friend()->where(['friend_id' => Auth::user()->id])->whereNull('is_accepted')
+            $isFriendRequestSent = $this->friend()->where(['friend_id' => Auth::user()->id])
+                ->whereNull('is_accepted')
                 ->whereNull('is_rejected')->first();
             return ($isFriendRequestSent == null) ? false : true;
         }
+    }
+
+    public function videoShared(){
+        return $this->hasMany(VideoSharingMapping::class,'share_with','user_id');
     }
 }

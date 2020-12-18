@@ -155,7 +155,7 @@ class SendNotification extends Command
 
         $labelReminders = Reminder::with(['birthdays'])->where(['is_notified'=>0])->get();
         foreach($labelReminders as $key => $labelReminder){
-            if($labelReminder->days_before != null){
+            if($labelReminder->days_before != null && $labelReminder->is_enable == 1){
                 foreach($labelReminder->birthdays->where('created_by',$labelReminder->user_id) as $key => $birthday){
                     $explodedDate = explode('-',$birthday->toArray()['birth_date']);
                     if(!isset($explodedDate[2])){
