@@ -39,18 +39,15 @@ class FriendsController extends Controller
             $friendModel->save();
             $fromUser = User::find($request->from_user);
             $message = $toUser->first_name.' '.$toUser->last_name.' accepted your friend request';
-            $userImageName = null;
+            $baseImageName = null;
             if($toUser->profile_image != null){
-                $userImageName = $toUser->profile_image;
-                try{
-                    Storage::disk('birthday')->put($userImageName, Storage::disk('profile_images')
-                        ->get($userImageName));
-                }catch (\Exception $e){
-
-                }
+                $baseImageName = basename($toUser->profile_image);
+                Storage::disk('birthday')->put($baseImageName, Storage::disk('profile_images')
+                    ->get($baseImageName));
             }
+
             $birthdayModel = new Birthday;
-            $birthdayModel->image = $userImageName;
+            $birthdayModel->image = $baseImageName;
             $birthdayModel->first_name = $toUser->first_name;
             $birthdayModel->last_name = $toUser->last_name;
             $birthdayModel->friend_id = $toUser->id;
@@ -65,13 +62,9 @@ class FriendsController extends Controller
 
             $userImageName = null;
             if($fromUser->profile_image != null){
-                $userImageName = $fromUser->profile_image;
-                try{
-                    Storage::disk('birthday')->put($userImageName, Storage::disk('profile_images')
+                $userImageName = basename($fromUser->profile_image);
+                Storage::disk('birthday')->put($userImageName, Storage::disk('profile_images')
                         ->get($userImageName));
-                }catch(\Exception $e){
-
-                }
             }
 
             $birthdayModel = new Birthday;
