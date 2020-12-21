@@ -104,7 +104,11 @@ class User extends Authenticatable
         }
     }
 
-    public function videoShared(){
+    public function videoSharedWithMe(){
         return $this->hasMany(VideoSharingMapping::class,'share_with','id');
+    }
+
+    public function videoSharedByMe(){
+        return $this->hasMany(VideoSharingMapping::class,'user_id','id');
     }
 }
