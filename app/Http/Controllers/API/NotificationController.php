@@ -47,7 +47,6 @@ class NotificationController extends Controller
             ->select(['id','to_user_id','notification','notify_date','is_read','created_at','updated_at',DB::raw('date(notify_date) as date')])
             ->where(DB::raw('date(notify_date)'),'>',Carbon::now()->subDays(7)->format('Y-m-d'))
             ->get();
-        dd($notificationModel);
         return response()->json(['errors'=>null,'notifications'=>$notificationModel->groupBy('date'),
             'message'=>'Notifications collected successfully!']);
     }
