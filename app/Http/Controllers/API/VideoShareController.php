@@ -98,12 +98,18 @@ class VideoShareController extends Controller
     public function publishedVideos(Request $request){
         $publishedVideoArray = [];
         $user = Auth::user();
-        $myPublishedVideos = Video::with(['videoShare.shareWith','user','comments','didILike'])->where(['user_id'=>$user->id,'is_published'=>1])->get();
+        $myPublishedVideos = Video::with(['videoShare.shareWith','user','comments','didILike','saved_videos.video'])->where(['user_id'=>$user->id,'is_published'=>1])->get();
         $myFriends = Friend::with(['friend'])->whereUserId($user->id)->get();
         $myFriends = $myFriends->map(function($query){
             return $query->friend;
         });
         $myPublishedVideos = $myPublishedVideos->map(function($item){
+            if($item['saved_videos'] != null && $item['saved_videos']['video'] != null){
+                $item['is_favourite'] = true;
+            }else{
+                $item['is_favourite'] = false;
+            }
+            unset($item['saved_videos']);
             if($item->videoShare != null){
                 $item['shared_with'] = $item->videoShare->shareWith->toArray();
             }else{
@@ -117,9 +123,15 @@ class VideoShareController extends Controller
             return $item;
         });
         $publishedVideoArray = $myPublishedVideos->toArray();
-        $friendsVideos = Video::with(['videoShare.shareWith','user','comments','didILike'])
+        $friendsVideos = Video::with(['videoShare.shareWith','user','comments','didILike','saved_videos.video'])
             ->whereIn('user_id',$myFriends->pluck('id'))->where(['is_published'=>1])->get();
         $friendsVideos = $friendsVideos->map(function($item){
+            if($item['saved_videos'] != null && $item['saved_videos']['video'] != null){
+                $item['is_favourite'] = true;
+            }else{
+                $item['is_favourite'] = false;
+            }
+            unset($item['saved_videos']);
             if($item->videoShare != null){
                 $item['shared_with'] = $item->videoShare->shareWith->toArray();
             }else{

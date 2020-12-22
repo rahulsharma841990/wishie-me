@@ -42,4 +42,10 @@ class Video extends Model
             ->where('user_id',Auth::user()->id);
     }
 
+    public function saved_videos(){
+        return $this->belongsTo(SavedVideosMapping::class,'id','video_id')
+            ->where('user_id',Auth::user()->id);
+    }
+
+
 }
