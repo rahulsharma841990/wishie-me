@@ -119,15 +119,20 @@ class FriendsController extends Controller
             $user = User::find($userId);
         }
         $usersArray = [];
-        $friends = Friend::with(['user'])->where(['friend_id'=>$user->id])->get()->toArray();
+        $friends = Friend::with(['user.videoSharedWithMe.video'])->where(['friend_id'=>$user->id])->get()->toArray();
         foreach($friends as $key => $user){
             $usersArray[$key] = $user['user'];
+            $videosSharedWithMe = $usersArray[$key]['video_shared_with_me'];
+            $usersArray[$key]['video_shared_with_me'] = [];
             if($user['is_accepted'] == 1){
                 $usersArray[$key]['is_my_friend'] = true;
                 $usersArray[$key]['is_friend_request_sent'] = false;
             }else{
                 $usersArray[$key]['is_my_friend'] = false;
                 $usersArray[$key]['is_friend_request_sent'] = true;
+            }
+            foreach($videosSharedWithMe as $k => $videos){
+                $usersArray[$key]['video_shared_with_me'][] = $videos['video'];
             }
         }
         return response()->json(['errors'=>null,'message'=>'Friends collected successfully!','users'=>$usersArray]);
