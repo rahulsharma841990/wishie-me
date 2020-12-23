@@ -80,11 +80,16 @@ class VideoShareController extends Controller
             $user = Auth::user();
             $savedVideoMapping = SavedVideosMapping::firstOrNew(['video_id'=>$request->video_id,'user_id'=>$user->id,
                 'publisher_id'=>$request->publisher_id]);
-            $savedVideoMapping->video_id = $request->video_id;
-            $savedVideoMapping->publisher_id = $request->publisher_id;
-            $savedVideoMapping->user_id = $user->id;
-            $savedVideoMapping->save();
-            return response()->json(['errors'=>null,'message'=>'Video saved to my profile successfully!']);
+            if(!$savedVideoMapping->exists){
+                $savedVideoMapping->video_id = $request->video_id;
+                $savedVideoMapping->publisher_id = $request->publisher_id;
+                $savedVideoMapping->user_id = $user->id;
+                $savedVideoMapping->save();
+                return response()->json(['errors'=>null,'message'=>'Video saved to my profile successfully!']);
+            }else{
+                $savedVideoMapping->delete();
+                return response()->json(['errors'=>null,'message'=>'Video removed from favourite successfully!']);
+            }
         }else{
             return response()->json(
                 ['errors'=>[
