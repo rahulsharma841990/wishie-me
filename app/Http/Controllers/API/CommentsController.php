@@ -40,4 +40,9 @@ class CommentsController extends Controller
         $videoComments = Comment::with(['user'])->where(['video_id'=>$video_id])->get();
         return response()->json(['errors'=>null,'message'=>'Comments collected successfully!','comments'=>$videoComments->toArray()]);
     }
+
+    public function deleteComment($id){
+        Comment::find($id)->delete();
+        return response()->json(['errors'=>null,'message'=>'Comment deleted successfully!']);
+    }
 }

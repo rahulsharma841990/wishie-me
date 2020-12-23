@@ -93,6 +93,7 @@ Route::group(['middleware'=>'cors'], function(){
         //Comments
         Route::post('comment','API\CommentsController@postComment');
         Route::get('comments/{video_id}','API\CommentsController@videoComments');
+        Route::delete('comment/delete/{comment_id}','API\CommentsController@deleteComment');
 
         //Like Video
         Route::post('like','API\VideoLikesController@likeVideo');
