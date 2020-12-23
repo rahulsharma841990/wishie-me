@@ -22,12 +22,17 @@ class VideoLikesController extends Controller
                 if(!$videoLikeModel->exists){
                     $videoModel->like_counts = $videoModel->like_counts + 1;
                     $videoModel->save();
+                    $videoLikeModel->video_id = $request->video_id;
+                    $videoLikeModel->user_id = $user->id;
+                    $videoLikeModel->publisher_id = $videoModel->user_id;
+                    $videoLikeModel->save();
+                    return response()->json(['errors'=>null,'message'=>'Video liked successfully!']);
+                }else{
+                    $videoModel->like_counts = $videoModel->like_counts - 1;
+                    $videoModel->save();
+                    $videoLikeModel->delete();
+                    return response()->json(['errors'=>null,'message'=>'Video un-liked successfully!']);
                 }
-                $videoLikeModel->video_id = $request->video_id;
-                $videoLikeModel->user_id = $user->id;
-                $videoLikeModel->publisher_id = $videoModel->user_id;
-                $videoLikeModel->save();
-                return response()->json(['errors'=>null,'message'=>'Video liked successfully!']);
             }
         }else{
             return response()->json(['errors'=>['video_id'=>['Video id is required!']],'message'=>'Video id is required!']);
