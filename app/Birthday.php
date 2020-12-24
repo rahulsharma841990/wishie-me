@@ -87,8 +87,8 @@ class Birthday extends Model
             //Later this Month
             $laterThisMonth = Carbon::parse('next week sunday');
             $lastDayOfMonth = Carbon::now()->endOfMonth();
-            if($birthday->format('m-d') > $laterThisMonth->format('m-d') &&
-                $birthday->format('m-d') <= $lastDayOfMonth->format('m-d')){
+            if($birthday->format('Y-m-d') > $laterThisMonth->format('Y-m-d') &&
+                $birthday->format('Y-m-d') <= $lastDayOfMonth->format('Y-m-d')){
                 if(!isset($this->attributes['type'])) {
                     $this->attributes['type'] = 'later_this_month';
                 }

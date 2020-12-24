@@ -86,7 +86,6 @@ class BirthdayController extends Controller
             ->get();
         $birthdays['Recent'] = $this->getRecentBirthdays($birthdayRecords);
         $birthdays['birthdays'] = $this->sortBirthdays($birthdayRecords->values()->toArray());
-
         return response()->json($birthdays);
 
         //Code not using //done in mobile application
