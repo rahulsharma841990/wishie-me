@@ -77,8 +77,8 @@ class Birthday extends Model
             //Next Week
             $nextWeek = Carbon::parse('next week');
             $nextWeekSunday = Carbon::parse('next week sunday');
-            if($birthday->format('m-d') >= $nextWeek->format('m-d') &&
-                $birthday->format('m-d') <= $nextWeekSunday->format('m-d')){
+            if($birthday->format('Y-m-d') >= $nextWeek->format('Y-m-d') &&
+                $birthday->format('Y-m-d') <= $nextWeekSunday->format('Y-m-d')){
                 if(!isset($this->attributes['type'])) {
                     $this->attributes['type'] = 'next_week';
                 }
