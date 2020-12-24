@@ -73,6 +73,7 @@ class RemindersController extends Controller
             $reminderModel->title = 'Day of Occasion';
             $reminderModel->time = '10:00 AM';
             $reminderModel->user_id = $user->id;
+            $reminderModel->days_before = '0 day before';
             $reminderModel->is_manual = 0;
             $reminderModel->tone = 'happy_birthday.mpeg';
             $reminderModel->save();
@@ -82,6 +83,7 @@ class RemindersController extends Controller
             $reminderModel->label_id = $label;
             $reminderModel->title = 'Day of Occasion';
             $reminderModel->time = '10:00 AM';
+            $reminderModel->days_before = '0 day before';
             $reminderModel->user_id = $user->id;
             $reminderModel->is_manual = 0;
             $reminderModel->tone = 'happy_birthday.mpeg';
