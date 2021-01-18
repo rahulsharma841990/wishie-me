@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="webtechql.com" id="63c228d1-80ca-4bbe-857f-40bfcae77f20" port="22" customName="Webtechql" nameFormat="CUSTOM" username="rahulasr">
+        <option name="customName" value="Webtechql" />
+      </sshConfig>
+    </configs>
+  </component>
+</project>
