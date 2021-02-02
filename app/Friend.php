@@ -10,7 +10,7 @@ use FCM;
 
 class Friend extends Model
 {
-    protected $fillable = ['user_id','friend_id','is_accepted','is_rejected'];
+    protected $fillable = ['user_id','friend_id','is_accepted','is_rejected','is_blocked'];
 
     public static function sendNotification($fromUser, $user, $message){
         $optionBuilder = new OptionsBuilder();
@@ -45,5 +45,9 @@ class Friend extends Model
 
     public function friend(){
         return $this->belongsTo(User::class,'friend_id','id');
+    }
+
+    public function friend_of(){
+        return $this->belongsTo(self::class,'user_id','friend_id');
     }
 }

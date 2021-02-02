@@ -119,15 +119,17 @@ class FriendsController extends Controller
             $user = User::find($userId);
         }
         $usersArray = [];
-        $friends = Friend::with(['user.videoSharedWithMe.video'])->where(['friend_id'=>$user->id])->get()->toArray();
+        $friends = Friend::with(['user.videoSharedWithMe.video','friend_of'])->where(['friend_id'=>$user->id])->get()->toArray();
         foreach($friends as $key => $user){
             $usersArray[$key] = $user['user'];
             $videosSharedWithMe = $usersArray[$key]['video_shared_with_me'];
             $usersArray[$key]['video_shared_with_me'] = [];
             if($user['is_accepted'] == 1){
+                $usersArray[$key]['is_blocked'] = $user['friend_of']['is_blocked'];
                 $usersArray[$key]['is_my_friend'] = true;
                 $usersArray[$key]['is_friend_request_sent'] = false;
             }else{
+                $usersArray[$key]['is_blocked'] = $user['friend_of']['is_blocked'];
                 $usersArray[$key]['is_my_friend'] = false;
                 $usersArray[$key]['is_friend_request_sent'] = true;
             }
@@ -136,5 +138,29 @@ class FriendsController extends Controller
             }
         }
         return response()->json(['errors'=>null,'message'=>'Friends collected successfully!','users'=>$usersArray]);
+    }
+
+    public function blockUnblockUser(Request $request){
+        $user = Auth::user();
+        if(!in_array($request->block_unblock,[0,1])){
+            return response()->json(['errors'=>['block_unblock'=>['Please send the status to 0 or 1 only!']]]);
+        }
+        Friend::where(['user_id'=>$user->id,'friend_id'=>$request->friend_id])
+            ->update(['is_blocked'=>$request->block_unblock]);
+        if($request->block_unblock == 1){
+            return response()->json(['errors'=>null,'message'=>'Friend blocked successfully!']);
+        }else{
+            return response()->json(['errors'=>null,'message'=>'Friend un-blocked successfully!']);
+        }
+    }
+
+    public function blockedUsers(){
+        $user = Auth::user();
+        $blockedFriends = Friend::with(['user','friend'])->where(['user_id'=>$user->id,'is_blocked'=>1])->get();
+        $usersArray = [];
+        foreach($blockedFriends as $key => $user){
+            $usersArray[$key] = $user['friend']->toArray();
+        }
+        return response()->json(['errors'=>null,'message'=>'Blocked users collected successfully!','users'=>$usersArray]);
     }
 }

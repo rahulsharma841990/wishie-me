@@ -97,6 +97,10 @@ Route::group(['middleware'=>'cors'], function(){
 
         //Like Video
         Route::post('like','API\VideoLikesController@likeVideo');
+
+        //Block User
+        Route::post('block-unblock/user','API\FriendsController@blockUnblockUser');
+        Route::get('blocked/friends','API\FriendsController@blockedUsers');
     });
 });
 Route::group(['middleware' => ['web']], function() {
