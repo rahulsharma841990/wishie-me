@@ -101,6 +101,9 @@ Route::group(['middleware'=>'cors'], function(){
         //Block User
         Route::post('block-unblock/user','API\FriendsController@blockUnblockUser');
         Route::get('blocked/friends','API\FriendsController@blockedUsers');
+
+        //Report User
+        Route::post('report/user/{id}','API\FriendsController@reportUser');
     });
 });
 Route::group(['middleware' => ['web']], function() {

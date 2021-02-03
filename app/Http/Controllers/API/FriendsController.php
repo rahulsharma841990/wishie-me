@@ -6,6 +6,7 @@ use App\Birthday;
 use App\Friend;
 use App\Http\Controllers\Controller;
 use App\LabelMapping;
+use App\ReportedUser;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -162,5 +163,20 @@ class FriendsController extends Controller
             $usersArray[$key] = $user['friend']->toArray();
         }
         return response()->json(['errors'=>null,'message'=>'Blocked users collected successfully!','users'=>$usersArray]);
+    }
+
+    public function reportUser(Request $request){
+        $user = Auth::user();
+        $reportedUser = ReportedUser::firstOreNew(['user_id'=>$user->id,'reported_user'=>$request->user_id]);
+        $reportedUser->user_id = $user->id;
+        $reportedUser->reported_user = $request->user_id;
+        $reportedUser->save();
+
+        $isMyFriend = Friend::where(['user_id'=>$user->id,'friend_id'=>$request->user_id])->first();
+        if($isMyFriend != null){
+            $isMyFriend->is_blocked = 1;
+            $isMyFriend->save();
+        }
+        return response()->json(['error'=>false,'message'=>'User reported successfully!']);
     }
 }
