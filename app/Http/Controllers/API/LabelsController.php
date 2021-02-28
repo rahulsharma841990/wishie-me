@@ -38,7 +38,7 @@ class LabelsController extends Controller
     }
 
     public function getLabels(){
-        $labelsModel = Label::with(['birthdays.labels'])->whereCreatedBy(Auth::user()->id)->orWhere('created_by',0)->get();
+        $labelsModel = Label::with(['birthdays.labels','birthdays.friend'])->whereCreatedBy(Auth::user()->id)->orWhere('created_by',0)->get();
         $labelsArray = [];
         foreach($labelsModel as $k => $label){
             $labelsArray[$k] = $label->toArray();
@@ -74,8 +74,13 @@ class LabelsController extends Controller
     }
 
     public function destroy($id){
-        $labelModel = Label::whereCreatedBy(Auth::user()->id)->find($id);
+        $labelModel = Label::with(['birthdays'])->whereCreatedBy(Auth::user()->id)->find($id);
         if($labelModel != null){
+            if(!$labelModel->birthdays->isEmpty()){
+                $labelBirthdaysIds = $labelModel->birthdays->groupBy('id')->keys();
+                LabelMapping::whereIn('birthday_id',$labelBirthdaysIds)
+                    ->where(['label_id'=>$id,'user_id'=>Auth::user()->id])->update(['label_id'=>3]);
+            }
             $labelModel->delete();
             return response()->json(['errors'=>null,'message'=>'Label deleted successfully!']);
         }else{
