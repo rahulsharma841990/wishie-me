@@ -18,6 +18,10 @@ class Birthday extends Model
         }
     }
 
+    public function getMobileAttribute($value){
+        return (string)$value;
+    }
+
     public function labels(){
         return $this->hasManyThrough(Label::class,LabelMapping::class,'birthday_id','id','id','label_id');
     }
