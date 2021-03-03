@@ -113,6 +113,11 @@ class User extends Authenticatable
     }
 
     public function getIsBlockedAttribute(){
-        return $this->friend()->first()->is_blocked;
+        $isFriend = $this->friend()->first();
+        if($isFriend != null){
+            return $this->friend()->first()->is_blocked;
+        }else{
+            return null;
+        }
     }
 }
