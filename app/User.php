@@ -24,7 +24,7 @@ class User extends Authenticatable
         'header_image'
     ];
 
-    protected $appends = ['friends_count','is_my_friend','is_friend_request_sent'];
+    protected $appends = ['friends_count','is_my_friend','is_friend_request_sent','is_blocked'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -112,5 +112,7 @@ class User extends Authenticatable
         return $this->hasMany(VideoSharingMapping::class,'user_id','id');
     }
 
-
+    public function getIsBlockedAttribute(){
+        return $this->friend()->first()->is_blocked;
+    }
 }
