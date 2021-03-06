@@ -74,18 +74,18 @@ class SendNotification extends Command
                         // Condition one (Day of Occasion)
                         if(Carbon::now()->format('m-d') == $birthDate->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
-                                    'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                    'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday today. Let\'s wish them!'];
-                                $this->sendNotification($notificationArray);
-                                $notificationLogArray[] = $notificationArray;
-                                $reminder->is_notified = 0;
-                                $reminder->save();
+                                'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday today. Let\'s wish them!','tone'=>$reminder->tone];
+                            $this->sendNotification($notificationArray);
+                            $notificationLogArray[] = $notificationArray;
+                            $reminder->is_notified = 0;
+                            $reminder->save();
                         }
 
                         if(Carbon::now()->format('m-d') == $birthDate->subDays(1)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday tomorrow!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday tomorrow!','tone'=>$reminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                             $reminder->is_notified = 0;
@@ -94,7 +94,7 @@ class SendNotification extends Command
                         if(Carbon::now()->format('m-d') == $birthDate->subDays(2)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 2 days!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 2 days!','tone'=>$reminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                             $reminder->is_notified = 0;
@@ -103,7 +103,7 @@ class SendNotification extends Command
                         if(Carbon::now()->format('m-d') == $birthDate->subDays(3)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 3 days!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 3 days!','tone'=>$reminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                             $reminder->is_notified = 0;
@@ -112,7 +112,7 @@ class SendNotification extends Command
                         if(Carbon::now()->format('m-d') == $birthDate->subDays(4)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 4 days!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 4 days!','tone'=>$reminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                             $reminder->is_notified = 0;
@@ -121,7 +121,7 @@ class SendNotification extends Command
                         if(Carbon::now()->format('m-d') == $birthDate->subDays(5)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 5 days!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 5 days!','tone'=>$reminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                             $reminder->is_notified = 0;
@@ -130,7 +130,7 @@ class SendNotification extends Command
                         if(Carbon::now()->format('m-d') == $birthDate->subDays(6)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 6 days!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 6 days!','tone'=>$reminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                             $reminder->is_notified = 0;
@@ -139,7 +139,7 @@ class SendNotification extends Command
                         if(Carbon::now()->format('m-d') == $birthDate->subWeeks(1)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in one week!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in one week!','tone'=>$reminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                             $reminder->is_notified = 0;
@@ -148,7 +148,7 @@ class SendNotification extends Command
                         if(Carbon::now()->format('m-d') == $birthDate->subWeeks(2)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 2 weeks!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 2 weeks!','tone'=>$reminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                             $reminder->is_notified = 0;
@@ -157,7 +157,7 @@ class SendNotification extends Command
                         if(Carbon::now()->format('m-d') == $birthDate->subWeeks(3)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 3 weeks!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 3 weeks!','tone'=>$reminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                             $reminder->is_notified = 0;
@@ -166,7 +166,7 @@ class SendNotification extends Command
                         if(Carbon::now()->format('m-d') == $birthDate->subWeeks(4)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 4 weeks!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 4 weeks!','tone'=>$reminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                             $reminder->is_notified = 0;
@@ -213,7 +213,7 @@ class SendNotification extends Command
                 $userId = $reminder->birthdays->created_by;
                 $labelReminders = $reminder->birthdays->labels->first()->label_reminders->where('user_id',$userId);
                 foreach($labelReminders as $key => $labelReminder){
-                    if($labelReminder->days_before != null){
+//                    if($labelReminder->days_before != null){
                         $explodedDate = explode('-',$reminder->birthdays->toArray()['birth_date']);
                         if(!isset($explodedDate[2])){
                             $birthDate = Carbon::createFromFormat('m-d',$reminder->birthdays->toArray()['birth_date']);
@@ -225,7 +225,7 @@ class SendNotification extends Command
                         if(Carbon::now()->format('m-d') == $birthDate->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday today. Let\'s wish them!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday today. Let\'s wish them!','tone'=>$labelReminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                         }
@@ -233,70 +233,70 @@ class SendNotification extends Command
                         if(Carbon::now()->format('m-d') == $birthDate->subDays(1)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday tomorrow!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday tomorrow!','tone'=>$labelReminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                         }
                         if(Carbon::now()->format('m-d') == $birthDate->subDays(2)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 2 days!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 2 days!','tone'=>$labelReminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                         }
                         if(Carbon::now()->format('m-d') == $birthDate->subDays(3)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 3 days!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 3 days!','tone'=>$labelReminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                         }
                         if(Carbon::now()->format('m-d') == $birthDate->subDays(4)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 4 days!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 4 days!','tone'=>$labelReminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                         }
                         if(Carbon::now()->format('m-d') == $birthDate->subDays(5)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 5 days!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 5 days!','tone'=>$labelReminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                         }
                         if(Carbon::now()->format('m-d') == $birthDate->subDays(6)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 6 days!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 6 days!','tone'=>$labelReminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                         }
                         if(Carbon::now()->format('m-d') == $birthDate->subWeeks(1)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in one week!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in one week!','tone'=>$labelReminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                         }
                         if(Carbon::now()->format('m-d') == $birthDate->subWeeks(2)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 2 weeks!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 2 weeks!','tone'=>$labelReminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                         }
                         if(Carbon::now()->format('m-d') == $birthDate->subWeeks(3)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 3 weeks!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 3 weeks!','tone'=>$labelReminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                         }
                         if(Carbon::now()->format('m-d') == $birthDate->subWeeks(4)->format('m-d')){
                             $notificationArray = ['name'=>$reminder->birthdays->first_name,$reminder->birthdays->last_name,
                                 'token'=>$reminder->birthdays->user->device_token,'birthday_id'=>$reminder->birthdays->id,
-                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 4 weeks!'];
+                                'user_id'=>$reminder->user_id,'message'=>'It\'s '.$reminder->birthdays->first_name.' birthday in 4 weeks!','tone'=>$labelReminder->tone];
                             $this->sendNotification($notificationArray);
                             $notificationLogArray[] = $notificationArray;
                         }
@@ -342,7 +342,7 @@ class SendNotification extends Command
                                 }
                             }
                         }*/
-                    }
+//                    }
                 }
             }
         }
@@ -362,7 +362,7 @@ class SendNotification extends Command
                     if(Carbon::now()->format('m-d') == $birthDate->format('m-d')){
                         $notificationArray = ['name'=>$birthday->first_name,$birthday->last_name,
                             'token'=>$birthday->user->device_token,'birthday_id'=>$birthday->id,
-                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday today. Let\'s wish them!'];
+                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday today. Let\'s wish them!','tone'=>$labelReminder->tone];
                         $this->sendNotification($notificationArray);
                         $notificationLogArray[] = $notificationArray;
                     }
@@ -370,70 +370,70 @@ class SendNotification extends Command
                     if(Carbon::now()->format('m-d') == $birthDate->subDays(1)->format('m-d')){
                         $notificationArray = ['name'=>$birthday->first_name,$birthday->last_name,
                             'token'=>$birthday->user->device_token,'birthday_id'=>$birthday->id,
-                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday tomorrow!'];
+                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday tomorrow!','tone'=>$labelReminder->tone];
                         $this->sendNotification($notificationArray);
                         $notificationLogArray[] = $notificationArray;
                     }
                     if(Carbon::now()->format('m-d') == $birthDate->subDays(2)->format('m-d')){
                         $notificationArray = ['name'=>$birthday->first_name,$birthday->last_name,
                             'token'=>$birthday->user->device_token,'birthday_id'=>$birthday->id,
-                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in 2 days!'];
+                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in 2 days!','tone'=>$labelReminder->tone];
                         $this->sendNotification($notificationArray);
                         $notificationLogArray[] = $notificationArray;
                     }
                     if(Carbon::now()->format('m-d') == $birthDate->subDays(3)->format('m-d')){
                         $notificationArray = ['name'=>$birthday->first_name,$birthday->last_name,
                             'token'=>$birthday->user->device_token,'birthday_id'=>$birthday->id,
-                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in 3 days!'];
+                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in 3 days!','tone'=>$labelReminder->tone];
                         $this->sendNotification($notificationArray);
                         $notificationLogArray[] = $notificationArray;
                     }
                     if(Carbon::now()->format('m-d') == $birthDate->subDays(4)->format('m-d')){
                         $notificationArray = ['name'=>$birthday->first_name,$birthday->last_name,
                             'token'=>$birthday->user->device_token,'birthday_id'=>$birthday->id,
-                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in 4 days!'];
+                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in 4 days!','tone'=>$labelReminder->tone];
                         $this->sendNotification($notificationArray);
                         $notificationLogArray[] = $notificationArray;
                     }
                     if(Carbon::now()->format('m-d') == $birthDate->subDays(5)->format('m-d')){
                         $notificationArray = ['name'=>$birthday->first_name,$birthday->last_name,
                             'token'=>$birthday->user->device_token,'birthday_id'=>$birthday->id,
-                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in 5 days!'];
+                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in 5 days!','tone'=>$labelReminder->tone];
                         $this->sendNotification($notificationArray);
                         $notificationLogArray[] = $notificationArray;
                     }
                     if(Carbon::now()->format('m-d') == $birthDate->subDays(6)->format('m-d')){
                         $notificationArray = ['name'=>$birthday->first_name,$birthday->last_name,
                             'token'=>$birthday->user->device_token,'birthday_id'=>$birthday->id,
-                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in 6 days!'];
+                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in 6 days!','tone'=>$labelReminder->tone];
                         $this->sendNotification($notificationArray);
                         $notificationLogArray[] = $notificationArray;
                     }
                     if(Carbon::now()->format('m-d') == $birthDate->subWeeks(1)->format('m-d')){
                         $notificationArray = ['name'=>$birthday->first_name,$birthday->last_name,
                             'token'=>$birthday->user->device_token,'birthday_id'=>$birthday->id,
-                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in one week!'];
+                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in one week!','tone'=>$labelReminder->tone];
                         $this->sendNotification($notificationArray);
                         $notificationLogArray[] = $notificationArray;
                     }
                     if(Carbon::now()->format('m-d') == $birthDate->subWeeks(2)->format('m-d')){
                         $notificationArray = ['name'=>$birthday->first_name,$birthday->last_name,
                             'token'=>$birthday->user->device_token,'birthday_id'=>$birthday->id,
-                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in 2 weeks!'];
+                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in 2 weeks!','tone'=>$labelReminder->tone];
                         $this->sendNotification($notificationArray);
                         $notificationLogArray[] = $notificationArray;
                     }
                     if(Carbon::now()->format('m-d') == $birthDate->subWeeks(3)->format('m-d')){
                         $notificationArray = ['name'=>$birthday->first_name,$birthday->last_name,
                             'token'=>$birthday->user->device_token,'birthday_id'=>$birthday->id,
-                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in 3 weeks!'];
+                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in 3 weeks!','tone'=>$labelReminder->tone];
                         $this->sendNotification($notificationArray);
                         $notificationLogArray[] = $notificationArray;
                     }
                     if(Carbon::now()->format('m-d') == $birthDate->subWeeks(4)->format('m-d')){
                         $notificationArray = ['name'=>$birthday->first_name,$birthday->last_name,
                             'token'=>$birthday->user->device_token,'birthday_id'=>$birthday->id,
-                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in 4 weeks!'];
+                            'user_id'=>$labelReminder->user_id,'message'=>'It\'s '.$birthday->first_name.' birthday in 4 weeks!','tone'=>$labelReminder->tone];
                         $this->sendNotification($notificationArray);
                         $notificationLogArray[] = $notificationArray;
                     }
@@ -498,7 +498,7 @@ class SendNotification extends Command
         $notificationBuilder = new PayloadNotificationBuilder('Wishi Me');
 //        $notificationBuilder->setBody('It\'s '.$deviceTokens['name'].' birthday. Wish them Happy birthday.')
         $notificationBuilder->setBody($deviceTokens['message'])
-            ->setSound('default')->setClickAction('FCM_PLUGIN_ACTIVITY');
+            ->setSound($deviceTokens['tone'])->setClickAction('FCM_PLUGIN_ACTIVITY');
 
         $dataBuilder = new PayloadDataBuilder();
         $dataBuilder->addData(['birthday_id' => $deviceTokens['birthday_id']]);
