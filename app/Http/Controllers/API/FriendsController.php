@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Birthday;
+use App\BirthdayReminder;
 use App\Friend;
 use App\Http\Controllers\Controller;
 use App\LabelMapping;
@@ -11,6 +12,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class FriendsController extends Controller
@@ -31,58 +33,65 @@ class FriendsController extends Controller
         $toUser = Auth::user();
         $friendModel = Friend::where(['friend_id'=>$toUser->id,'user_id'=>$request->from_user])->first();
         if($request->accept_reject == 1){
-            $friendModel->is_accepted = 1;
-            $saveToMyFriend = new Friend;
-            $saveToMyFriend->user_id = $toUser->id;
-            $saveToMyFriend->friend_id = $request->from_user;
-            $saveToMyFriend->is_accepted = 1;
-            $saveToMyFriend->save();
-            $friendModel->save();
-            $fromUser = User::find($request->from_user);
-            $message = $toUser->first_name.' '.$toUser->last_name.' accepted your friend request';
-            $baseImageName = null;
-            if($toUser->profile_image != null){
-                $baseImageName = basename($toUser->profile_image);
-                Storage::disk('birthday')->put($baseImageName, Storage::disk('profile_images')
-                    ->get($baseImageName));
-            }
+            DB::beginTransaction();
+            try{
+                $friendModel->is_accepted = 1;
+                $saveToMyFriend = new Friend;
+                $saveToMyFriend->user_id = $toUser->id;
+                $saveToMyFriend->friend_id = $request->from_user;
+                $saveToMyFriend->is_accepted = 1;
+                $saveToMyFriend->save();
+                $friendModel->save();
+                $fromUser = User::find($request->from_user);
+                $message = $toUser->first_name.' '.$toUser->last_name.' accepted your friend request';
+                $baseImageName = null;
+                if($toUser->profile_image != null){
+                    $baseImageName = basename($toUser->profile_image);
+                    Storage::disk('birthday')->put($baseImageName, Storage::disk('profile_images')
+                        ->get($baseImageName));
+                }
 
-            $birthdayModel = new Birthday;
-            $birthdayModel->image = $baseImageName;
-            $birthdayModel->first_name = $toUser->first_name;
-            $birthdayModel->last_name = $toUser->last_name;
-            $birthdayModel->friend_id = $toUser->id;
-            $birthdayModel->birthday = Carbon::parse($toUser->dob)->format('Y-m-d');
-            $birthdayModel->created_by = $request->from_user;
-            $birthdayModel->save();
-            $labelMapping = new LabelMapping;
-            $labelMapping->birthday_id = $birthdayModel->id;
-            $labelMapping->label_id = 3;
-            $labelMapping->user_id = $request->from_user;
-            $labelMapping->save();
+                $birthdayModel = new Birthday;
+                $birthdayModel->image = $baseImageName;
+                $birthdayModel->first_name = $toUser->first_name;
+                $birthdayModel->last_name = $toUser->last_name;
+                $birthdayModel->friend_id = $toUser->id;
+                $birthdayModel->birthday = Carbon::parse($toUser->dob)->format('Y-m-d');
+                $birthdayModel->created_by = $request->from_user;
+                $birthdayModel->save();
+                $labelMapping = new LabelMapping;
+                $labelMapping->birthday_id = $birthdayModel->id;
+                $labelMapping->label_id = 3;
+                $labelMapping->user_id = $request->from_user;
+                $labelMapping->save();
 
-            $userImageName = null;
-            if($fromUser->profile_image != null){
-                $userImageName = basename($fromUser->profile_image);
-                Storage::disk('birthday')->put($userImageName, Storage::disk('profile_images')
+                $userImageName = null;
+                if($fromUser->profile_image != null){
+                    $userImageName = basename($fromUser->profile_image);
+                    Storage::disk('birthday')->put($userImageName, Storage::disk('profile_images')
                         ->get($userImageName));
-            }
+                }
 
-            $birthdayModel = new Birthday;
-            $birthdayModel->image = $userImageName;
-            $birthdayModel->first_name = $fromUser->first_name;
-            $birthdayModel->last_name = $fromUser->last_name;
-            $birthdayModel->friend_id = $fromUser->id;
-            $birthdayModel->birthday = Carbon::parse($fromUser->dob)->format('Y-m-d');
-            $birthdayModel->created_by = $toUser->id;
-            $birthdayModel->save();
-            $labelMapping = new LabelMapping;
-            $labelMapping->birthday_id = $birthdayModel->id;
-            $labelMapping->label_id = 3;
-            $labelMapping->user_id = $toUser->id;
-            $labelMapping->save();
-            Friend::sendNotification($fromUser,$toUser,$message);
-            return response()->json(['errors'=>null,'message'=>'Friend request accepted successfully!']);
+                $birthdayModel = new Birthday;
+                $birthdayModel->image = $userImageName;
+                $birthdayModel->first_name = $fromUser->first_name;
+                $birthdayModel->last_name = $fromUser->last_name;
+                $birthdayModel->friend_id = $fromUser->id;
+                $birthdayModel->birthday = Carbon::parse($fromUser->dob)->format('Y-m-d');
+                $birthdayModel->created_by = $toUser->id;
+                $birthdayModel->save();
+                $labelMapping = new LabelMapping;
+                $labelMapping->birthday_id = $birthdayModel->id;
+                $labelMapping->label_id = 3;
+                $labelMapping->user_id = $toUser->id;
+                $labelMapping->save();
+                Friend::sendNotification($fromUser,$toUser,$message);
+                DB::commit();
+                return response()->json(['errors'=>null,'message'=>'Friend request accepted successfully!']);
+            }catch(\Exception $e){
+                DB::rollBack();
+                throw $e;
+            }
         }else{
             $friendModel->is_rejected = 1;
             $friendModel->save();
@@ -178,5 +187,35 @@ class FriendsController extends Controller
             $isMyFriend->save();
         }
         return response()->json(['error'=>false,'message'=>'User reported successfully!']);
+    }
+
+    public function unfriendUser(Request $request){
+
+        $user = Auth::user(); //wo wants to unfriend
+        /*
+         * Steps:
+         * 1) Remove entry from friends table
+         * 2) Remove entry from birthday table
+         * 3) Remove custom reminder belongs to the birthday
+         * */
+
+        DB::beginTransaction();
+        try{
+            if($request->has('friend_id')){
+                Friend::where(['user_id'=>$user->id,'friend_id'=>$request->friend_id])
+                    ->orWhere(['user_id'=>$request->friend_id,'friend_id'=>$user->id])->delete();
+                $birthday = Birthday::where(['friend_id'=>$request->friend_id,'created_by'=>$user->id])->first();
+                if($birthday != null){
+                    BirthdayReminder::where(['birthday_id'=>$birthday->id])->delete();
+                    $birthday->delete();
+                }
+                DB::commit();
+                return response()->json(['errors'=>false,'message'=>'User unfriend successfully!']);
+            }else{
+                return response()->json(['errors'=>['friend'=>['friend id is required!']],'message'=>'Friend id is required!'],422);
+            }
+        }catch(\Exception $e){
+            throw $e;
+        }
     }
 }
