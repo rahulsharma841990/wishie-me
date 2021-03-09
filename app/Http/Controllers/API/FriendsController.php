@@ -203,7 +203,9 @@ class FriendsController extends Controller
         try{
             if($request->has('friend_id')){
                 Friend::where(['user_id'=>$user->id,'friend_id'=>$request->friend_id])
-                    ->orWhere(['user_id'=>$request->friend_id,'friend_id'=>$user->id])->delete();
+                    ->orWhere(function($query) use ($request, $user){
+                        $query->where(['user_id'=>$request->friend_id,'friend_id'=>$user->id]);
+                    })->delete();
                 $birthday = Birthday::where(['friend_id'=>$request->friend_id,'created_by'=>$user->id])->first();
                 if($birthday != null){
                     BirthdayReminder::where(['birthday_id'=>$birthday->id])->delete();
