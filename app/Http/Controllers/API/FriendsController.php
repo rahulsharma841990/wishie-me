@@ -19,7 +19,7 @@ class FriendsController extends Controller
 {
     public function sendFriendRequest(Request $request){
         $fromUser = Auth::user();
-        $friendModel = Friend::firstOrNew(['user_id'=>$fromUser,'friend_id'=>$request->to_user]);
+        $friendModel = Friend::firstOrNew(['user_id'=>$fromUser->id,'friend_id'=>$request->to_user]);
         $friendModel->user_id = $fromUser->id;
         $friendModel->friend_id = $request->to_user;
         $friendModel->save();
